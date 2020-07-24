@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.github.siyamed.shapeimageview.CircularImageView
+            android:id="@+id/post_his_pic"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/profilepic"
+            app:siBorderColor="@color/colorThemeAccentpink"
+            app:siBorderWidth="1dp"
+            app:siBorderType="stroke"
+            />
+        <TextView
+            android:id="@+id/post_his_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/post_his_pic"
+            android:fontFamily="@font/almendra_display"
+            android:padding="10dp"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/option_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            app:srcCompat="@drawable/ic_baseline_more_vert_24" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:id="@+id/text_image"
+            android:layout_below="@id/post_his_pic">
+            <TextView
+                android:id="@+id/read_thought"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:autoLink="all"
+                android:background="@drawable/bg_text"
+                android:fontFamily="@font/clicker_script"
+                android:layout_below="@+id/post_my_pic"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/post_add_pic"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/zoomimagebackground"
+                android:layout_below="@id/read_thought"
+                />
+            <ImageView
+                android:id="@+id/piclikeheart"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/heart"
+                android:visibility="invisible"
+                android:layout_centerInParent="true"/>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/like_share_comment"
+            android:layout_width="match_parent"
+            android:layout_below="@id/text_image"
+            android:layout_height="50dp">
+
+
+            <ImageView
+                android:id="@+id/love_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/heartoutline" />
+
+            <ImageView
+                android:id="@+id/comment_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="47dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/love_icon"
+                app:srcCompat="@drawable/comment_icon" />
+
+            <ImageView
+                android:id="@+id/share_icon"
+                android:layout_width="30dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="8dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/comment_icon"
+                app:srcCompat="@drawable/share_icon" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/likes_comment_time"
+            android:layout_width="match_parent"
+            android:layout_below="@id/like_share_comment"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/love_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textColor="#ff00ff"
+                />
+            <TextView
+                android:id="@+id/comment_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/love_count"
+                android:text="view all 4 comments"
+                android:padding="5dp"
+                />
+            <TextView
+                android:id="@+id/post_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/comment_count"
+                android:padding="5dp"
+                />
+
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_below="@id/likes_comment_time"
+            android:padding="10dp"
+            android:id="@+id/commentbox"
+            android:visibility="gone"
+            android:layout_height="wrap_content">
+            <com.github.siyamed.shapeimageview.CircularImageView
+                android:id="@+id/mypic_cmt"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/profilepic"/>
+
+            <EditText
+                android:id="@+id/editboxcomments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/send_comments"
+                android:layout_toRightOf="@+id/mypic_cmt"
+                android:background="@drawable/bg_text"
+                android:fontFamily="@font/cutive_mono"
+                android:paddingLeft="10dp"
+                android:textSize="14sp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+
+            <ImageButton
+                android:id="@+id/send_comments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:background="@color/colorThemeAccentpink"
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="5dp"
+                app:srcCompat="@drawable/ic_baseline_send_24" />
+
+
+        </RelativeLayout>
+
+
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

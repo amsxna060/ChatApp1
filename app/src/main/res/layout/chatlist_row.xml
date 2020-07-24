@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="4dp"
+    app:cardPreventCornerOverlap="true"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    app:cardElevation="5dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="2dp"
+        >
+        <com.github.siyamed.shapeimageview.CircularImageView
+            android:id="@+id/chatlist_pic"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/profilepic"
+            android:scaleType="centerCrop"
+            app:siBorderColor="@color/colorThemeAccentpink"
+            app:siBorderWidth="2dp"
+            android:clickable="true"
+            app:siBorderType="stroke"
+            android:layout_margin="2dp"
+            android:focusable="true" />
+        <TextView
+            android:id="@+id/chatlist_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Amol Saxena"
+            android:layout_toRightOf="@+id/chatlist_pic"
+            android:layout_marginLeft="16dp"
+            android:textSize="16sp"
+            android:fontFamily="serif"
+            android:padding="2dp"
+            android:textColor="@color/colorThemeAccentpink"
+            />
+        <TextView
+            android:id="@+id/chatlist_lastmessage"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_toRightOf="@+id/chatlist_pic"
+            android:layout_marginLeft="16dp"
+            android:textSize="14sp"
+            android:padding="2dp"
+            android:layout_toLeftOf="@+id/chatlist_online"
+            android:layout_marginTop="2dp"
+            android:layout_below="@+id/chatlist_name"
+            />
+        <TextView
+            android:id="@+id/chatlist_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="online"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:textSize="14sp"
+            android:textColor="@color/colorAccent"
+            android:padding="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_below="@+id/chatlist_name"
+            />
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

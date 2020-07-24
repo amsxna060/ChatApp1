@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="122dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="56dp"
+        app:srcCompat="@drawable/login_icon"
+        tools:layout_editor_absoluteX="106dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/TIL_email"
+        app:boxStrokeColor="@color/colorThemeAccentpink"
+        app:hintTextColor="@color/colorThemeAccentpink"
+        android:layout_below="@+id/imageView"
+        android:layout_marginTop="150dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/login_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="serif"
+            android:inputType="textEmailAddress"
+            android:lines="1"
+            android:maxLines="1"
+            android:imeOptions="actionNext"
+            android:clickable="true"
+
+            android:hint="Email" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/TIL_pass"
+        app:boxStrokeColor="@color/colorThemeAccentpink"
+        app:hintTextColor="@color/colorThemeAccentpink"
+        android:layout_below="@+id/TIL_email"
+        app:passwordToggleEnabled="true"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:id="@+id/login_pass"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:imeOptions="actionDone"
+            android:fontFamily="serif"
+            android:hint="Password" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <Button
+        android:id="@+id/login_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:padding="5dp"
+        android:backgroundTint="#D93A6E"
+        android:layout_below="@id/TIL_pass"
+        android:layout_marginTop="16dp"
+        android:text="Login"
+        android:fontFamily="serif"
+        />
+    <TextView
+        android:id="@+id/register_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:fontFamily="serif"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:textSize="14sp"
+        />
+    <TextView
+        android:id="@+id/forget_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:text="Forget Password!"
+        android:clickable="true"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/colorThemeAccentpink"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/login_btn"
+        android:fontFamily="serif"
+        android:textSize="14sp"
+        />
+
+    <ImageView
+        android:id="@+id/back_btn_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:padding="5dp"
+        android:clickable="true"
+        app:srcCompat="@drawable/backbtn" />
+    <ProgressBar
+        android:id="@+id/progress_bar_lgn"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@id/login_btn"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="30dp"
+        android:indeterminateTint="@color/colorThemeAccentpink"
+        android:alpha="0"
+        />
+</RelativeLayout>

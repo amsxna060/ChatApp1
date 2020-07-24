@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChatActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/chattoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/colorThemeAccentpink"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="2dp"
+            >
+            <com.github.siyamed.shapeimageview.CircularImageView
+                android:id="@+id/chat_pic"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/profilepic"
+                android:scaleType="centerCrop"
+                app:siBorderColor="@color/white"
+                app:siBorderWidth="2dp"
+                android:clickable="true"
+                app:siBorderType="stroke"
+                android:layout_margin="2dp"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/name_online"
+                android:layout_toRightOf="@+id/chat_pic"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/chat_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Amol Saxena"
+                    android:layout_toRightOf="@+id/chat_pic"
+                    android:layout_marginLeft="16dp"
+                    android:textSize="18dp"
+                    android:padding="2dp"
+                    android:textColor="@color/white"
+                    />
+                <TextView
+                    android:id="@+id/chat_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Online"
+                    android:layout_toRightOf="@+id/chat_pic"
+                    android:layout_marginLeft="16dp"
+                    android:textSize="14dp"
+                    android:padding="2dp"
+                    android:textColor="#FFEA00"
+                    android:layout_below="@+id/allusers_name"
+                    />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatsmessagesscreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="10dp"
+        android:layout_above="@+id/entry_style"
+        android:layout_below="@+id/chattoolbar" />
+    <RelativeLayout
+        android:id="@+id/entry_style"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_sender"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_toLeftOf="@+id/send_btn_msg"
+        >
+<EditText
+    android:id="@+id/edit_txt_box"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Type your message..."
+    android:textColor="#ffffff"
+    android:fontFamily="serif"
+    android:paddingLeft="10dp"
+    android:paddingRight="15dp"
+    android:paddingTop="13dp"
+    android:paddingBottom="13dp"
+    android:textSize="16dp"
+    android:maxHeight="150dp"
+    android:inputType="textMultiLine|textCapSentences|textAutoComplete|textAutoCorrect"
+    android:background="@drawable/bg_sender"
+    android:textColorHint="@color/colorThemeAccentpink"
+    />
+
+
+    </RelativeLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/send_btn_msg"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="16dp"
+        app:elevation="3dp"
+        app:borderWidth="1dp"
+        app:fabSize="auto"
+        app:ensureMinTouchTargetSize="true"
+        app:backgroundTint="@color/colorThemeAccentpink"
+        android:src="@drawable/ic_baseline_send_24"
+        android:layout_marginBottom="8dp"/>
+
+
+</RelativeLayout>

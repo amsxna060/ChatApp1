@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "756948552979",
+    "firebase_url": "https://amansiolmessenger.firebaseio.com",
+    "project_id": "amansiolmessenger",
+    "storage_bucket": "amansiolmessenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756948552979:android:b65a9d6c63d7242dc8dee6",
+        "android_client_info": {
+          "package_name": "com.amansiol.messenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "756948552979-gjgnhlccl51nao6shjakabdipltqi6e9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.amansiol.messenger",
+            "certificate_hash": "4d75f11b19bb6f0665a1e40dae8ccfd07887ff76"
+          }
+        },
+        {
+          "client_id": "756948552979-arkbc77mrpv46ppk76u5j7tqm89lg8c2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsCTsMqzWooBNfqbPQh98hAa-t1bRUROo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756948552979-arkbc77mrpv46ppk76u5j7tqm89lg8c2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

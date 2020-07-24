@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="4dp"
+    app:cardPreventCornerOverlap="true"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    app:cardElevation="5dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="2dp"
+        >
+        <com.github.siyamed.shapeimageview.CircularImageView
+            android:id="@+id/allusers_pic"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/profilepic"
+            android:scaleType="centerCrop"
+            app:siBorderColor="@color/colorThemeAccentpink"
+            app:siBorderWidth="2dp"
+            android:clickable="true"
+            app:siBorderType="stroke"
+            android:layout_margin="2dp"
+            />
+        <TextView
+            android:id="@+id/allusers_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Amol Saxena"
+            android:layout_toRightOf="@+id/allusers_pic"
+            android:layout_marginLeft="16dp"
+            android:textSize="20dp"
+            android:padding="2dp"
+            android:textColor="@color/colorThemeAccentpink"
+            />
+        <TextView
+            android:id="@+id/allusers_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="The lives goal is to be happy always."
+            android:layout_toRightOf="@+id/allusers_pic"
+            android:layout_marginLeft="16dp"
+            android:textSize="14dp"
+            android:padding="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_below="@+id/allusers_name"
+            />
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

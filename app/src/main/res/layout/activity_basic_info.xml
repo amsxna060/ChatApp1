@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BasicInfoActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="56dp"
+        app:srcCompat="@drawable/icon_basic"
+        tools:layout_editor_absoluteX="106dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/TIL_name"
+        app:boxStrokeColor="@color/colorThemeAccentpink"
+        app:hintTextColor="@color/colorThemeAccentpink"
+        android:layout_below="@+id/imageView"
+        android:layout_marginTop="100dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/basic_info_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="serif"
+            android:inputType="textPersonName"
+            android:lines="1"
+            android:maxLines="1"
+            android:imeOptions="actionNext"
+            android:clickable="true"
+            android:hint="Name" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/TIL_gender"
+        app:boxStrokeColor="@color/colorThemeAccentpink"
+        app:hintTextColor="@color/colorThemeAccentpink"
+        android:layout_below="@+id/TIL_name"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:id="@+id/basic_info_gen"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:imeOptions="actionNext"
+            android:fontFamily="serif"
+            android:hint="Gender" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/TIL_dob"
+        app:boxStrokeColor="@color/colorThemeAccentpink"
+        app:hintTextColor="@color/colorThemeAccentpink"
+        android:layout_below="@+id/TIL_gender"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:id="@+id/basic_info_dob"
+            android:inputType="date"
+            android:imeOptions="actionNext"
+            android:fontFamily="serif"
+            android:focusableInTouchMode="false"
+            android:hint="Date Of birth"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/TIL_contact"
+        app:boxStrokeColor="@color/colorThemeAccentpink"
+        app:hintTextColor="@color/colorThemeAccentpink"
+        android:layout_below="@+id/TIL_dob"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:id="@+id/basic_info_cno"
+            android:inputType="date"
+            android:imeOptions="actionDone"
+            android:fontFamily="serif"
+            android:hint="Contact Number"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/basic_info_next_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:padding="5dp"
+        android:backgroundTint="#D93A6E"
+        android:layout_below="@id/TIL_contact"
+        android:layout_marginTop="16dp"
+        android:text="NEXT"
+        android:fontFamily="serif"
+        />
+
+
+    <ProgressBar
+        android:id="@+id/progress_bar_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/basic_info_next_btn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="90dp"
+        android:indeterminateTint="@color/colorThemeAccentpink"
+        android:alpha="0"
+        />
+    </RelativeLayout>
+</ScrollView>

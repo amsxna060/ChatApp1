@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:id="@+id/messageLayout"
+    android:background="@drawable/bg_text"
+    >
+    <com.github.siyamed.shapeimageview.CircularImageView
+        android:id="@+id/chat_pic"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/profilepic"/>
+
+        <TextView
+            android:id="@+id/chat_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:textColor="#FFFFFF"
+            android:textSize="18dp"
+            android:text="message"
+            android:maxWidth="300dp"
+            android:clickable="true"
+            android:autoLink="all"
+            android:layout_toLeftOf="@+id/chat_pic"
+            android:background="@drawable/bg_sender"
+            android:paddingRight="25dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"/>
+<!--    <TextView-->
+<!--        android:id="@+id/chat_msg_pic"-->
+<!--        android:layout_width="250dp"-->
+<!--        android:layout_height="250dp"-->
+<!--        android:paddingTop="5dp"-->
+<!--        android:clickable="true"-->
+<!--        android:visibility="gone"-->
+<!--        android:layout_toLeftOf="@+id/chat_pic"-->
+<!--        android:background="@drawable/bg_sender"-->
+<!--        android:paddingBottom="5dp"-->
+<!--        />-->
+
+
+
+    <TextView
+        android:id="@+id/timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/chat_msg"
+        android:text="03:30 am"
+        android:visibility="gone"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="50dp"
+        />
+
+
+</RelativeLayout>

@@ -7,6 +7,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -18,6 +20,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.amansiol.messenger.ChatActivity;
+import com.amansiol.messenger.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -58,6 +61,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         bundle.putString("hisUID",user);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Bitmap bitmap= BitmapFactory.decodeResource(getResources(), R.drawable.appicon);
         PendingIntent pIntent=PendingIntent.getActivity(this,i,intent,PendingIntent.FLAG_ONE_SHOT);
         Uri defsoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder=new NotificationCompat.Builder(this)
@@ -67,6 +71,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
                 .setAutoCancel(true)
                 .setSound(defsoundUri)
                 .setContentIntent(pIntent)
+                .setLargeIcon(bitmap)
                 .setWhen(System.currentTimeMillis());
         NotificationManager notificationManager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         int j=0;
@@ -90,6 +95,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         bundle.putString("hisUID",user);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Bitmap bitmap= BitmapFactory.decodeResource(getResources(), R.drawable.appicon);
         PendingIntent pIntent=PendingIntent.getActivity(this,i,intent,PendingIntent.FLAG_ONE_SHOT);
         Uri defsoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder=new NotificationCompat.Builder(this,CHANNEL_ID);
@@ -99,6 +105,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
                 .setSmallIcon(Integer.parseInt(icon))
                 .setSound(defsoundUri)
                 .setContentIntent(pIntent)
+                .setLargeIcon(bitmap)
                 .setWhen(System.currentTimeMillis());
 
 

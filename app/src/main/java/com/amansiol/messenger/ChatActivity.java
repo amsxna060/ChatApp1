@@ -367,7 +367,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds:snapshot.getChildren()){
                     Token token=ds.getValue(Token.class);
-                    Data data=new Data(myUid,name+" : "+my_msg,"New Message",hisUid,R.drawable.profilepic);
+                    Data data=new Data(myUid,name+" : "+my_msg,"New Message",hisUid,R.drawable.ic_baseline_message_24);
                     Sender sender=new Sender(data,token.getToken());
                     //fcm json object request
                     try {

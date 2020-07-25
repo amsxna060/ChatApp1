@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
+import android.net.Uri;
 import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amansiol.messenger.models.PostModel;
@@ -43,6 +47,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +84,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
     @Override
     public void onBindViewHolder(@NonNull final PostHolder holder, int i) {
 
-        String desc=postModels.get(i).getPdesc();
+        final String desc=postModels.get(i).getPdesc();
         String name=postModels.get(i).getPname();
         String icon=postModels.get(i).getPuserimage();
         String postpic=postModels.get(i).getPimage();
@@ -228,7 +234,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         holder.share_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(ctx,"share",Toast.LENGTH_LONG).show();
+                BitmapDrawable sharepic=(BitmapDrawable)holder.post_add_pic.getDrawable();
+                if(sharepic==null)
+                {
+                    ShareTextOnly(desc);
+
+                }else {
+                    Bitmap bitmap=sharepic.getBitmap();
+                    SharetextnPic(desc,bitmap);
+                }
             }
         });
         if(likes.equals("0")){
@@ -315,6 +329,47 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
             }
         });
 
+
+    }
+
+    private void SharetextnPic(String desc, Bitmap bitmap) {
+        Uri uri=savePic(bitmap);
+        Intent Sharepictext=new Intent(Intent.ACTION_SEND);
+        Sharepictext.putExtra(Intent.EXTRA_STREAM,uri);
+        Sharepictext.putExtra(Intent.EXTRA_TEXT,desc);
+        Sharepictext.putExtra(Intent.EXTRA_SUBJECT,"Subject here");
+        Sharepictext.setType("image/png");
+        ctx.startActivity(Intent.createChooser(Sharepictext,"Share Via"));
+
+
+    }
+
+
+    private Uri savePic(Bitmap bitmap) {
+        Uri uri=null;
+        File imageFolder=new File(ctx.getCacheDir(),"images");
+        try {
+            imageFolder.mkdirs();
+            File file=new File(imageFolder,"share_image.png");
+            FileOutputStream stream =new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG,90,stream);
+            stream.flush();
+            stream.close();
+            uri= FileProvider.getUriForFile(ctx,"${applicationId}.provider",file);
+
+
+        }catch (Exception e){
+            Toast.makeText(ctx,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+        }
+        return uri;
+    }
+
+    private void ShareTextOnly(String desc) {
+        Intent sharetext=new Intent(Intent.ACTION_SEND);
+        sharetext.setType("text/plain");
+        sharetext.putExtra(Intent.EXTRA_SUBJECT,"Subject Here");
+        sharetext.putExtra(Intent.EXTRA_TEXT,desc);
+        ctx.startActivity(Intent.createChooser(sharetext,"Share via"));
     }
 
     private void updateCommentCount(String posttime) {

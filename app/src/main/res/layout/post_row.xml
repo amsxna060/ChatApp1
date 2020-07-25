@@ -64,10 +64,11 @@
                 android:id="@+id/post_add_pic"
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
-                android:scaleType="centerCrop"
-                android:background="@drawable/zoomimagebackground"
                 android:layout_below="@id/read_thought"
-                />
+                android:layout_marginTop="-80dp"
+                android:background="@drawable/zoomimagebackground"
+                android:scaleType="centerCrop" />
+
             <ImageView
                 android:id="@+id/piclikeheart"
                 android:layout_width="150dp"
@@ -94,16 +95,16 @@
 
             <ImageView
                 android:id="@+id/comment_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="47dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/love_icon"
-                app:srcCompat="@drawable/comment_icon" />
+                app:srcCompat="@drawable/commenticon" />
 
             <ImageView
                 android:id="@+id/share_icon"
-                android:layout_width="30dp"
-                android:layout_height="25dp"
+                android:layout_width="35dp"
+                android:layout_height="28dp"
                 android:layout_marginLeft="8dp"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/comment_icon"

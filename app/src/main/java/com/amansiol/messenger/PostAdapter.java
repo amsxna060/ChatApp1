@@ -5,9 +5,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Handler;
 import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,9 +33,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import com.amansiol.messenger.models.PostModel;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.bumptech.glide.load.resource.transcode.DrawableBytesTranscoder;
 import com.github.siyamed.shapeimageview.CircularImageView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -65,6 +71,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
     String cmtuseremail;
     String cmtuseruid;
     boolean mProcessCmt=false;
+    private int ani=0;
 
     public PostAdapter(Context ctx, List<PostModel> postModels) {
         this.ctx = ctx;
@@ -186,32 +193,54 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         holder.post_add_pic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String myUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-                final int plikes= Integer.parseInt(postModels.get(position).getLikes());
-                mProcessLike=true;
-                final String postId=postModels.get(position).getPtimestamp();
-                likesRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(mProcessLike){
-                            if(snapshot.child(postId).hasChild(myUid)){
-                                postsRef.child(postId).child("likes").setValue(""+(plikes-1));
-                                likesRef.child(postId).child(myUid).removeValue();
-                                mProcessLike=false;
-                            }else {
+                if(ani<1){
+                    ani++;
+                    return;
+                }
+                holder.picLIkeheart.setAlpha(0.85f);
+                Drawable d=holder.picLIkeheart.getDrawable();
+                if(d instanceof AnimatedVectorDrawableCompat){
+                    AnimatedVectorDrawableCompat drawableCompat=(AnimatedVectorDrawableCompat)d;
+                    drawableCompat.start();
+                }else if(d instanceof AnimatedVectorDrawable){
+                    AnimatedVectorDrawable drawable=(AnimatedVectorDrawable)d;
+                    drawable.start();
+                }
 
-                                postsRef.child(postId).child("likes").setValue(""+(plikes+1));
-                                likesRef.child(postId).child(myUid).setValue("Liked");
-                                mProcessLike=false;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        final String myUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        final int plikes= Integer.parseInt(postModels.get(position).getLikes());
+                        mProcessLike=true;
+                        final String postId=postModels.get(position).getPtimestamp();
+                        likesRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(mProcessLike){
+                                    if(snapshot.child(postId).hasChild(myUid)){
+                                        postsRef.child(postId).child("likes").setValue(""+(plikes-1));
+                                        likesRef.child(postId).child(myUid).removeValue();
+                                        mProcessLike=false;
+                                    }else {
+
+                                        postsRef.child(postId).child("likes").setValue(""+(plikes+1));
+                                        likesRef.child(postId).child(myUid).setValue("Liked");
+                                        mProcessLike=false;
+
+                                    }
+                                }
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
+                            }
+                        });
                     }
-                });
+                },3000);
+
+
             }
         });
         holder.comment_icon.setOnClickListener(new View.OnClickListener() {
@@ -336,7 +365,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         Uri uri=savePic(bitmap);
         Intent Sharepictext=new Intent(Intent.ACTION_SEND);
         Sharepictext.putExtra(Intent.EXTRA_STREAM,uri);
-        Sharepictext.putExtra(Intent.EXTRA_TEXT,desc);
+        if(!desc.equals("noDescription")){
+            Sharepictext.putExtra(Intent.EXTRA_TEXT,desc);
+        }
         Sharepictext.putExtra(Intent.EXTRA_SUBJECT,"Subject here");
         Sharepictext.setType("image/png");
         ctx.startActivity(Intent.createChooser(Sharepictext,"Share Via"));
@@ -355,7 +386,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
             bitmap.compress(Bitmap.CompressFormat.PNG,90,stream);
             stream.flush();
             stream.close();
-            uri= FileProvider.getUriForFile(ctx,"${applicationId}.provider",file);
+            uri= FileProvider.getUriForFile(ctx,ctx.getPackageName() + ".provider",file);
 
 
         }catch (Exception e){
@@ -404,6 +435,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                     holder.love_icon.setImageResource(R.drawable.heart);
                 }else{
                     holder.love_icon.setImageResource(R.drawable.heartoutline);
+
                 }
             }
 

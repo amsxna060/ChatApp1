@@ -49,10 +49,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/chat_msg"
-        android:text="03:30 am"
         android:visibility="gone"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="50dp"
+        />
+    <TextView
+        android:id="@+id/seenlistener"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/chat_msg"
+        android:layout_alignParentEnd="true"
         />
 
 

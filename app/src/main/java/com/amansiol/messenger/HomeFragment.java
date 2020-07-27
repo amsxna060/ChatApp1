@@ -13,8 +13,11 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.core.widget.ImageViewCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,6 +33,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -388,8 +392,8 @@ public class HomeFragment extends Fragment {
 
         // setting maximum bitmap width and height
         intent.putExtra(ImagePickerActivity.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, true);
-        intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_WIDTH, 1000);
-        intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_HEIGHT, 1000);
+        intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_WIDTH, 500);
+        intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_HEIGHT, 500);
 
         startActivityForResult(intent, REQUEST_IMAGE);
     }
@@ -480,6 +484,32 @@ public class HomeFragment extends Fragment {
         });
 
     }
+    private void SearchPost(final String s){
+        DatabaseReference chatdbref=FirebaseDatabase.getInstance().getReference("Posts");
+        chatdbref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                PostList.clear();
+                for(DataSnapshot ds:snapshot.getChildren()){
+
+                    PostModel post=ds.getValue(PostModel.class);
+                    if(post.getPname().toLowerCase().contains(s.toLowerCase())||
+                       post.getPdesc().toLowerCase().contains(s.toLowerCase())){
+                        PostList.add(post);
+                    }
+
+                    postAdapter=new PostAdapter(getActivity(),PostList);
+                    postrecycler.setAdapter(postAdapter);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     // navigating user to app settings
     private void openSettings() {
@@ -511,6 +541,31 @@ public class HomeFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.profilemenu,menu);
         super.onCreateOptionsMenu(menu, inflater);
+        MenuItem searchitem=menu.findItem(R.id.searchbar);
+        final MenuItem logout=menu.findItem(R.id.logout);
+        final SearchView searchView=(SearchView) MenuItemCompat.getActionView(searchitem);
+        searchView.setQueryHint("Search Here");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if(!TextUtils.isEmpty(query)){
+                    SearchPost(query);
+                }else {
+                    loadPost();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(!TextUtils.isEmpty(newText)){
+                    SearchPost(newText);
+                }else {
+                  loadPost();
+                }
+                return false;
+            }
+        });
     }
 
     @Override

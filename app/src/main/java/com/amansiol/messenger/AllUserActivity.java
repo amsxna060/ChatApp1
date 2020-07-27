@@ -29,6 +29,7 @@ public class AllUserActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     Allusers_Adapter allusers_adapter;
     List<Allusers_models> Userlist;
+    public static boolean alluserActivityvar=true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +56,7 @@ public class AllUserActivity extends AppCompatActivity {
                         Userlist.add(allusers_models);
                     }
                     allusers_adapter=new Allusers_Adapter(AllUserActivity.this,Userlist);
+                    alluserActivityvar=true;
                     allusers_recycler.setAdapter(allusers_adapter);
                 }
             }

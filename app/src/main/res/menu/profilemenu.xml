@@ -4,4 +4,9 @@
 
     <item android:title="Logout"
         android:id="@+id/logout"/>
+    <item android:title="Search"
+        android:id="@+id/searchbar"
+        android:icon="@drawable/ic_baseline_search_24"
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"/>
 </menu>

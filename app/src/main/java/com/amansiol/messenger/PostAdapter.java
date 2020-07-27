@@ -383,7 +383,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
             imageFolder.mkdirs();
             File file=new File(imageFolder,"share_image.png");
             FileOutputStream stream =new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG,90,stream);
+            bitmap.compress(Bitmap.CompressFormat.PNG,50,stream);
             stream.flush();
             stream.close();
             uri= FileProvider.getUriForFile(ctx,ctx.getPackageName() + ".provider",file);

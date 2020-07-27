@@ -55,7 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
                        getSupportFragmentManager().beginTransaction().replace(R.id.container_id,new ProfileFragment()).commit();
                        return true;
                    case R.id.users:
-                       mactionbar.setTitle("Users");
+                       mactionbar.setTitle("Search");
                        getSupportFragmentManager().beginTransaction().replace(R.id.container_id,new UsersFragment()).commit();
                        return true;
                    case R.id.chatlist:

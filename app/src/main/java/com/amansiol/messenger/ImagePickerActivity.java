@@ -47,8 +47,8 @@ public class ImagePickerActivity extends AppCompatActivity {
     public static final int REQUEST_GALLERY_IMAGE = 1;
 
     private boolean lockAspectRatio = false, setBitmapMaxWidthHeight = false;
-    private int ASPECT_RATIO_X = 16, ASPECT_RATIO_Y = 9, bitmapMaxWidth = 1000, bitmapMaxHeight = 1000;
-    private int IMAGE_COMPRESSION = 80;
+    private int ASPECT_RATIO_X = 16, ASPECT_RATIO_Y = 9, bitmapMaxWidth = 500, bitmapMaxHeight = 500;
+    private int IMAGE_COMPRESSION = 50;
     public static String fileName;
 
     public interface PickerOptionListener {
@@ -193,7 +193,8 @@ public class ImagePickerActivity extends AppCompatActivity {
         Uri destinationUri = Uri.fromFile(new File(getCacheDir(), queryName(getContentResolver(), sourceUri)));
         UCrop.Options options = new UCrop.Options();
         options.setCompressionQuality(IMAGE_COMPRESSION);
-
+        options.setFreeStyleCropEnabled(true);
+        options.setImageToCropBoundsAnimDuration(2000);
         // applying UI theme
         options.setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary));
         options.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));

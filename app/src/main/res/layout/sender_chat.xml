@@ -55,6 +55,17 @@
         android:layout_marginLeft="50dp"
         android:visibility="gone"
         />
+    <TextView
+        android:id="@+id/seenlistener"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/chat_msg"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="2dp"
+        android:text="Seen"
+
+        />
+
 
 
 </RelativeLayout>

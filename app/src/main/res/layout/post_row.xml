@@ -67,13 +67,14 @@
                 android:background="@drawable/zoomimagebackground"
                 android:maxHeight="500dp"
                 android:minHeight="300dp"
+                android:layout_below="@+id/read_thought"
                 android:scaleType="centerCrop"
                 />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/piclikeheart"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 app:srcCompat="@drawable/likeheartani"
                 android:alpha="0"
                 android:layout_centerInParent="true"/>

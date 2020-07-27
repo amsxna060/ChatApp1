@@ -3,6 +3,7 @@ package com.amansiol.messenger;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,8 +116,29 @@ public class AdapterChatList extends RecyclerView.Adapter<AdapterChatList.ChatLi
                 image.create().show();
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                builder.setCancelable(true);
+                String items[]={"Delete Chat"};
+                builder.setTitle("Delete");
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        DeleteMessage();
+                    }
+                });
+                builder.create().show();
+                return false;
+            }
+        });
+    }
+
+    private void DeleteMessage() {
 
     }
+
     public void setLastMessageMap(String userId,String message){
         lastMessageMap.put(userId,message);
     }

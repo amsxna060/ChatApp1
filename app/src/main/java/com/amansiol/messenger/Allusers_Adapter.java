@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amansiol.messenger.models.Allusers_models;
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.firebase.ui.auth.data.model.User;
 import com.squareup.picasso.Picasso;
 
@@ -50,9 +51,18 @@ public class Allusers_Adapter extends RecyclerView.Adapter<AllUsers_ViewHolder> 
     holder.itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-           Intent intent=new Intent(context,ChatActivity.class);
-           intent.putExtra("hisUID",his_UID);
-           context.startActivity(intent);
+            if(AllUserActivity.alluserActivityvar){
+                Intent intent=new Intent(context,ChatActivity.class);
+                intent.putExtra("hisUID",his_UID);
+                context.startActivity(intent);
+                Animatoo.animateInAndOut(context);
+            }else {
+                Intent intent=new Intent(context,OtherProfileActivity.class);
+                intent.putExtra("hisUID",his_UID);
+                context.startActivity(intent);
+                Animatoo.animateInAndOut(context);
+            }
+
         }
     });
     holder.image.setOnClickListener(new View.OnClickListener() {

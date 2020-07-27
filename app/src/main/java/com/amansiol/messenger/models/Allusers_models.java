@@ -8,11 +8,12 @@ public class Allusers_models {
     String search;
     String onlineStatus;
     String typing;
+    String email;
 
     public Allusers_models() {
     }
 
-    public Allusers_models(String UID, String name, String status, String image, String search, String onlineStatus, String typing) {
+    public Allusers_models(String UID, String name, String status, String image, String search, String onlineStatus, String typing, String email) {
         this.UID = UID;
         this.name = name;
         this.status = status;
@@ -20,6 +21,7 @@ public class Allusers_models {
         this.search = search;
         this.onlineStatus = onlineStatus;
         this.typing = typing;
+        this.email = email;
     }
 
     public String getUID() {
@@ -76,5 +78,13 @@ public class Allusers_models {
 
     public void setTyping(String typing) {
         this.typing = typing;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

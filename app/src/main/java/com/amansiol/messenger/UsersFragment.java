@@ -6,11 +6,14 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +24,7 @@ import android.view.ViewGroup;
 import com.amansiol.messenger.models.Allusers_models;
 import com.amansiol.messenger.models.Images;
 import com.amansiol.messenger.models.PostModel;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,10 +48,14 @@ public class UsersFragment extends Fragment {
     RecyclerView post_recycler;
     FirebaseDatabase mfirebasedatabase;
     DatabaseReference mref;
+    DatabaseReference umref;
     FirebaseUser muser;
     FirebaseAuth firebaseAuth;
     imagesadapter imagesadapter;
     List<Images> imagesList;
+    RecyclerView allusers_recycler;
+    Allusers_Adapter allusers_adapter;
+    List<Allusers_models> Userlist;
 
     public UsersFragment() {
         // Required empty public constructor
@@ -60,20 +68,47 @@ public class UsersFragment extends Fragment {
         // Inflate the layout for this fragment
         View v= inflater.inflate(R.layout.fragment_users, container, false);
         post_recycler=v.findViewById(R.id.images_recycler);
-        post_recycler.setLayoutManager(new StaggeredGridLayoutManager(2,LinearLayoutManager.VERTICAL));
+        StaggeredGridLayoutManager staggeredGridLayoutManager=new StaggeredGridLayoutManager(2,LinearLayoutManager.VERTICAL);
+//        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+        staggeredGridLayoutManager.setReverseLayout(true);
+        post_recycler.setLayoutManager(staggeredGridLayoutManager);
         post_recycler.setHasFixedSize(true);
         mfirebasedatabase=FirebaseDatabase.getInstance();
         mref=mfirebasedatabase.getReference("Posts");
         firebaseAuth=FirebaseAuth.getInstance();
         muser=firebaseAuth.getCurrentUser();
         imagesList=new ArrayList<>();
-
-
-      loadPost();
-
+        allusers_recycler=v.findViewById(R.id.searchusers);
+        allusers_recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        allusers_recycler.setHasFixedSize(true);
+        mfirebasedatabase=FirebaseDatabase.getInstance();
+        umref=mfirebasedatabase.getReference("Users");
+        Userlist=new ArrayList<>();
+        loadPost();
         return v;
     }
+    private void getAllUser() {
+        umref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Userlist.clear();
+                for(DataSnapshot ds:snapshot.getChildren()){
+                    Allusers_models allusers_models=ds.getValue(Allusers_models.class);
+                    if(!allusers_models.getUID().equals(muser.getUid())){
+                        Userlist.add(allusers_models);
+                    }
+                    allusers_adapter=new Allusers_Adapter(getActivity(),Userlist);
+                    AllUserActivity.alluserActivityvar=false;
+                    allusers_recycler.setAdapter(allusers_adapter);
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
     private void loadPost() {
 
         DatabaseReference chatdbref=FirebaseDatabase.getInstance().getReference("Posts");
@@ -91,6 +126,33 @@ public class UsersFragment extends Fragment {
                     imagesadapter.notifyDataSetChanged();
                     post_recycler.setAdapter(imagesadapter);
 
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+    private void searchUsers(final String newText) {
+        umref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Userlist.clear();
+                for(DataSnapshot ds:snapshot.getChildren()){
+                    Allusers_models allusers_models=ds.getValue(Allusers_models.class);
+                    if(!allusers_models.getUID().equals(muser.getUid())){
+                       if(allusers_models.getName().toLowerCase().contains(newText.toLowerCase())||
+                          allusers_models.getEmail().toLowerCase().contains(newText.toLowerCase())) {
+                           Userlist.add(allusers_models);
+                       }
+                    }
+                    allusers_adapter=new Allusers_Adapter(getActivity(),Userlist);
+                    AllUserActivity.alluserActivityvar=false;
+                    allusers_adapter.notifyDataSetChanged();
+                    allusers_recycler.setAdapter(allusers_adapter);
                 }
             }
 
@@ -125,7 +187,48 @@ public class UsersFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.profilemenu,menu);
         super.onCreateOptionsMenu(menu, inflater);
+        MenuItem searchitem=menu.findItem(R.id.searchbar);
+        final MenuItem logout=menu.findItem(R.id.logout);
+
+        final SearchView searchView=(SearchView) MenuItemCompat.getActionView(searchitem);
+        searchView.setQueryHint("Search User Here");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if(!TextUtils.isEmpty(query)){
+                    post_recycler.setVisibility(View.GONE);
+                    allusers_recycler.setVisibility(View.VISIBLE);
+                    searchUsers(query);
+                    logout.setVisible(false);
+                }else {
+                    post_recycler.setVisibility(View.VISIBLE);
+                    allusers_recycler.setVisibility(View.GONE);
+                    Userlist.clear();
+                    logout.setVisible(false);
+                }
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                if(!TextUtils.isEmpty(newText)){
+                    post_recycler.setVisibility(View.GONE);
+                    allusers_recycler.setVisibility(View.VISIBLE);
+                    searchUsers(newText);
+                    logout.setVisible(false);
+
+                }else {
+                    post_recycler.setVisibility(View.VISIBLE);
+                    allusers_recycler.setVisibility(View.GONE);
+                    Userlist.clear();
+                    logout.setVisible(false);
+                }
+                return false;
+            }
+        });
     }
+
+
 
     @Override
     public void onStart() {
@@ -149,6 +252,7 @@ public class UsersFragment extends Fragment {
                 checkUserLoginState();
                 return true;
             }
+
 
         }
         return false;

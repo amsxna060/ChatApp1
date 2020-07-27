@@ -110,6 +110,18 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
 
             }
         });
+
+        if(position==chatList.size()-1){
+            if(chatList.get(position).isIsseen()){
+                holder.seenlistener.setVisibility(View.VISIBLE);
+                holder.seenlistener.setText("Seen");
+            }else {
+                holder.seenlistener.setVisibility(View.VISIBLE);
+                holder.seenlistener.setText("Delivered");
+            }
+        }else {
+            holder.seenlistener.setVisibility(View.GONE);
+        }
          holder.chat_msg.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
@@ -167,6 +179,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
        TextView chat_msg,timestamp;
        ImageView chat_pic;
        RelativeLayout messageLayout;
+       TextView seenlistener;
 
       public ChatHolder(@NonNull View itemView) {
           super(itemView);
@@ -174,6 +187,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
           timestamp=itemView.findViewById(R.id.timestamp);
           chat_pic=itemView.findViewById(R.id.chat_pic);
           messageLayout=itemView.findViewById(R.id.messageLayout);
+          seenlistener=itemView.findViewById(R.id.seenlistener);
 
       }
   }

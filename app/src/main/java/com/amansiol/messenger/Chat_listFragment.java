@@ -4,10 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -117,7 +124,41 @@ public class Chat_listFragment extends Fragment {
             }
         });
     }
+   private void SearchChatList(final String s){
+       userList=new ArrayList<>();
+       reference=FirebaseDatabase.getInstance().getReference("Users");
+       reference.addValueEventListener(new ValueEventListener() {
+           @Override
+           public void onDataChange(@NonNull DataSnapshot snapshot) {
+               userList.clear();
+               for(DataSnapshot ds:snapshot.getChildren()){
+                   Allusers_models user=ds.getValue(Allusers_models.class);
+                   for(ChatlistModel chatlist:chatlistModels){
+                       assert user != null;
+                       if(user.getUID()!=null&&user.getUID().equals(chatlist.getId())){
+                           if(user.getName().toLowerCase().contains(s.toLowerCase())){
+                               userList.add(user);
+                               break;
+                           }
 
+                       }
+                   }
+                   //adapter
+                   adapterChatList=new AdapterChatList(getContext(),userList);
+                   adapterChatList.notifyDataSetChanged();
+                   recyclerView.setAdapter(adapterChatList);
+                   for(int i=0;i<userList.size();i++){
+                       lastMessage(userList.get(i).getUID());
+                   }
+               }
+           }
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError error) {
+
+           }
+       });
+   }
     private void lastMessage(final String uid) {
         DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Chats");
         ref.addValueEventListener(new ValueEventListener() {
@@ -165,5 +206,75 @@ public class Chat_listFragment extends Fragment {
             startActivity(new Intent(getActivity(),MainActivity.class));
             Objects.requireNonNull(getActivity()).finish();
         }
+    }
+    @Override
+    public void onResume() {
+        checkUserLoginState();
+        super.onResume();
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.profilemenu,menu);
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem searchitem=menu.findItem(R.id.searchbar);
+        final MenuItem logout=menu.findItem(R.id.logout);
+
+        final SearchView searchView=(SearchView) MenuItemCompat.getActionView(searchitem);
+        searchView.setQueryHint("Search User Here");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if(!TextUtils.isEmpty(query)){
+                    SearchChatList(query);
+                }else {
+                    loadChats();
+                }
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                if(!TextUtils.isEmpty(newText)){
+
+                    SearchChatList(newText);
+
+                }else {
+                    loadChats();
+                }
+                return false;
+            }
+        });
+    }
+
+
+
+    @Override
+    public void onStart() {
+        checkUserLoginState();
+        super.onStart();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.logout:
+            {
+                FirebaseAuth.getInstance().signOut();
+                checkUserLoginState();
+                return true;
+            }
+
+
+        }
+        return false;
     }
 }

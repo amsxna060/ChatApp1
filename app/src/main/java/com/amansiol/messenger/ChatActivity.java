@@ -288,7 +288,7 @@ public class ChatActivity extends AppCompatActivity {
                    ChatModel chat=ds.getValue(ChatModel.class);
                    if(chat.getReceiver().equals(myUid)&&chat.getSender().equals(hisUid)){
                        HashMap<String,Object> seenupdate=new HashMap<>();
-                       seenupdate.put("isSeen",true);
+                       seenupdate.put("isseen",true);
                        ds.getRef().updateChildren(seenupdate);
                    }
                }
@@ -337,7 +337,7 @@ public class ChatActivity extends AppCompatActivity {
         chatsmsg.put("receiver",hisUid);
         chatsmsg.put("message",my_msg);
         chatsmsg.put("timestamp",timestamp);
-        chatsmsg.put("isSeen",false);
+        chatsmsg.put("isseen",false);
         msgref.child("Chats").push().setValue(chatsmsg);
 
         final DatabaseReference database=FirebaseDatabase.getInstance().getReference("Users").child(myUid);
@@ -446,7 +446,6 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        readMessages();
         seenMessages();
         checkOnlineStatus("online");
     }

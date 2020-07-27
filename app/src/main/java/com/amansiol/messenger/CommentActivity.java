@@ -3,11 +3,13 @@ package com.amansiol.messenger;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.LinearLayout;
 
 import com.amansiol.messenger.models.CommentModel;
 import com.google.firebase.database.DataSnapshot;
@@ -42,7 +44,8 @@ public class CommentActivity extends AppCompatActivity {
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         commentRecycler.setLayoutManager(linearLayoutManager);
-
+        RecyclerView.ItemDecoration itemDecoration=new DividerItemDecoration(this, LinearLayout.VERTICAL);
+        commentRecycler.addItemDecoration(itemDecoration);
         loadComment();
 
     }

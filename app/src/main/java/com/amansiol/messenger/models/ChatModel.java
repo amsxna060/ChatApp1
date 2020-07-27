@@ -2,17 +2,17 @@ package com.amansiol.messenger.models;
 
 public class ChatModel {
     String message,receiver,sender,timestamp;
-    boolean isSeen;
+    boolean isseen;
 
     public ChatModel() {
     }
 
-    public ChatModel(String message, String receiver, String sender, String timestamp, boolean isSeen) {
+    public ChatModel(String message, String receiver, String sender, String timestamp, boolean isseen) {
         this.message = message;
         this.receiver = receiver;
         this.sender = sender;
         this.timestamp = timestamp;
-        this.isSeen = isSeen;
+        this.isseen = isseen;
     }
 
     public String getMessage() {
@@ -47,11 +47,11 @@ public class ChatModel {
         this.timestamp = timestamp;
     }
 
-    public boolean isSeen() {
-        return isSeen;
+    public boolean isIsseen() {
+        return isseen;
     }
 
-    public void setSeen(boolean seen) {
-        isSeen = seen;
+    public void setIsseen(boolean isseen) {
+        this.isseen = isseen;
     }
 }

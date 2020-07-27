@@ -23,33 +23,37 @@
         android:textColor="@color/colorThemeAccentpink"
         android:fontFamily="serif"
         android:paddingLeft="10dp"
+        android:textSize="12sp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp" />
         <TextView
             android:id="@+id/textboxcomments"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/mypic_cmtshow"
             android:background="@drawable/bg_text"
-            android:text="Nice pic"
-            android:fontFamily="@font/cutive_mono"
+            android:fontFamily="serif-monospace"
+            android:layout_toLeftOf="@+id/commenttime"
             android:layout_below="@+id/nameusercmt"
             android:paddingLeft="10dp"
+            android:paddingRight="5dp"
             android:paddingTop="5dp"
+            android:layout_marginTop="5dp"
             android:paddingBottom="5dp" />
 
     <TextView
         android:id="@+id/commenttime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/nameusercmt"
+        android:layout_alignParentEnd="true"
+        android:gravity="bottom"
         android:fontFamily="monospace"
         android:paddingLeft="10dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:layout_alignParentRight="true"
-        android:textSize="10sp"
+        android:layout_alignBottom="@+id/textboxcomments"
+        android:text="27/13/19 03:30 am"
         android:textColor="#00E676"
-        android:layout_below="@id/textboxcomments"
-        android:text="27/13/19 03:30 am" />
+        android:textSize="10sp" />
 
 </RelativeLayout>

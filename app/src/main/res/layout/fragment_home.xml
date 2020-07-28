@@ -16,7 +16,7 @@
             android:layout_height="40dp"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="5dp"
-            app:siBorderColor="@color/colorThemeAccentpink"
+            app:siBorderColor="@color/colorAccent"
             app:siBorderWidth="1dp"
             app:siBorderType="stroke"
             />
@@ -28,10 +28,9 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/post_my_pic"
-            android:fontFamily="@font/almendra_display"
+            android:fontFamily="serif"
             android:padding="10dp"
-            android:textSize="18dp"
-            android:textStyle="bold" />
+            android:textSize="18dp" />
 
         <EditText
             android:id="@+id/write_thought"
@@ -42,11 +41,11 @@
             android:paddingRight="15dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:textSize="20dp"
+            android:textSize="16dp"
             android:maxHeight="150dp"
             android:textStyle="bold"
             android:background="@drawable/bg_text"
-            android:fontFamily="@font/clicker_script"
+            android:fontFamily="serif-monospace"
             android:layout_below="@+id/post_my_pic"/>
         <androidx.appcompat.widget.AppCompatImageView
 
@@ -89,7 +88,7 @@
         android:layout_height="50dp"
         android:layout_below="@+id/add_post"
         android:layout_centerHorizontal="true"
-        android:indeterminateTint="@color/colorThemeAccentpink"
+        android:indeterminateTint="@color/colorAccent"
         android:visibility="gone"
         android:background="@color/transparent"
         />

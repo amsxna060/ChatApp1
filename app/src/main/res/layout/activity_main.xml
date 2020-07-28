@@ -4,17 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bglogin"
+    android:background="@drawable/mainbg"
     tools:context=".MainActivity">
     <Button
         android:id="@+id/login_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
-        android:backgroundTint="#D93A6E"
-        android:layout_below="@id/imageView4"
-        android:layout_marginTop="16dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginBottom="100dp"
         android:text="Login"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/register_btn"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/colorThemeAccentpink"
         android:fontFamily="serif"
         />
 
@@ -33,28 +35,43 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_alignParentTop="true"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:srcCompat="@drawable/logo"
+        android:layout_marginTop="56dp"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/welcome"
         android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_above="@id/description"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="10dp"
+        android:autoSizeTextType="uniform"
+        android:fontFamily="serif"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Welcome to MiChattie"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/micon"
+        android:text="Connect with your friends and \nShare Posts"
+        android:gravity="center"
+        android:fontFamily="@font/great_vibes"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:layout_above="@+id/login_btn"
         />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_marginTop="45dp"
-        android:layout_marginLeft="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView2"
-        app:srcCompat="@drawable/welcome" />
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
-        android:layout_below="@+id/imageView3"
-        app:srcCompat="@drawable/nice_toseeagain" />
 
 
 </RelativeLayout>

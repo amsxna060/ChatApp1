@@ -88,7 +88,7 @@
                     app:siBorderType="stroke"
                     android:clickable="true"
                     app:siBorderWidth="2dp"
-                    app:siBorderColor="@color/colorThemeAccentpink"
+                    app:siBorderColor="@color/colorAccent"
                     android:scaleType="centerCrop"
                     />
             </RelativeLayout>

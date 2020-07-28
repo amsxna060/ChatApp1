@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -20,17 +21,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setStatusBarColor(Color.parseColor("#11072D"));
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_main);
         login_btn=findViewById(R.id.login_btn);
         Register=findViewById(R.id.register_btn);
-        Register.setText(Html.fromHtml(getColoredSpanned(new_here,"#4E4E4E")+getColoredSpanned(rgstr,"#D93A6E")));
+        Register.setText(Html.fromHtml(getColoredSpanned(new_here,"#FFFFFF")+getColoredSpanned(rgstr,"#1DE9B6")));
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(MainActivity.this,LoginActivity.class);
                 startActivity(intent);
-                Animatoo.animateDiagonal(MainActivity.this);
+                Animatoo.animateSlideUp(MainActivity.this);
 
             }
         });

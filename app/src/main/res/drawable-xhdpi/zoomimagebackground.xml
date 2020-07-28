@@ -5,5 +5,5 @@
     android:innerRadius="20.0dip"
     android:thickness="2.0dip"
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#fff50057" />
+    <solid android:color="@color/colorAccent" />
 </shape>

@@ -63,7 +63,7 @@
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:padding="5dp"
-        android:backgroundTint="#D93A6E"
+        android:backgroundTint="#651FFF"
         android:layout_below="@id/TIL_pass"
         android:layout_marginTop="16dp"
         android:text="Register"
@@ -84,8 +84,8 @@
 
     <ImageView
         android:id="@+id/back_btn_register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
         android:padding="5dp"
@@ -99,7 +99,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="30dp"
-        android:indeterminateTint="@color/colorThemeAccentpink"
+        android:indeterminateTint="@color/colorAccent"
         android:alpha="0"
         />
 

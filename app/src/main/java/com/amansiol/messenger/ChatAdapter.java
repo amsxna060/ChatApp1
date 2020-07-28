@@ -110,18 +110,51 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
 
             }
         });
+        if(chatList.get(position).getSender().equals(muser.getUid())){
 
-        if(position==chatList.size()-1){
-            if(chatList.get(position).isIsseen()){
-                holder.seenlistener.setVisibility(View.VISIBLE);
-                holder.seenlistener.setText("Seen");
-            }else {
-                holder.seenlistener.setVisibility(View.VISIBLE);
-                holder.seenlistener.setText("Delivered");
+            try{
+                Picasso.get().load(myimage).into(holder.chat_pic);
+
+            }catch (Exception e){
+                Picasso.get().load(R.drawable.profilepic).into(holder.chat_pic);
             }
         }else {
-            holder.seenlistener.setVisibility(View.GONE);
+
+            try{
+                Picasso.get().load(hisimage).into(holder.chat_pic);
+
+            }catch (Exception e){
+                Picasso.get().load(R.drawable.profilepic).into(holder.chat_pic);
+            }
         }
+        holder.messageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!time){
+                    time=true;
+                    holder.timestamp.setVisibility(View.VISIBLE);
+
+                }else {
+                    holder.timestamp.setVisibility(View.GONE);
+                    time=false;
+                }
+
+            }
+        });
+        if(chatList.get(position).getSender().equals(muser.getUid())){
+            if(position==chatList.size()-1){
+                if(chatList.get(position).isIsseen()){
+                    holder.seenlistener.setVisibility(View.VISIBLE);
+                    holder.seenlistener.setText("Seen");
+                }else {
+                    holder.seenlistener.setVisibility(View.GONE);
+                }
+            }else {
+                holder.seenlistener.setVisibility(View.GONE);
+            }
+        }
+
+
          holder.chat_msg.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {

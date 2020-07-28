@@ -53,7 +53,7 @@
         android:paddingBottom="5dp"
         android:layout_alignBottom="@+id/textboxcomments"
         android:text="27/13/19 03:30 am"
-        android:textColor="#00E676"
+        android:textColor="@color/colorAccent"
         android:textSize="10sp" />
 
 </RelativeLayout>

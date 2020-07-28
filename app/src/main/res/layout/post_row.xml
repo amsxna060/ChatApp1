@@ -17,7 +17,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginLeft="5dp"
             android:src="@drawable/profilepic"
-            app:siBorderColor="@color/colorThemeAccentpink"
+            app:siBorderColor="@color/colorAccent"
             app:siBorderWidth="1dp"
             app:siBorderType="stroke"
             />
@@ -28,10 +28,9 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/post_his_pic"
-            android:fontFamily="@font/almendra_display"
+            android:fontFamily="serif"
             android:padding="10dp"
-            android:textSize="18dp"
-            android:textStyle="bold" />
+            android:textSize="18dp" />
 
         <ImageView
             android:id="@+id/option_menu"
@@ -57,7 +56,7 @@
                 android:textStyle="bold"
                 android:autoLink="all"
                 android:background="@drawable/bg_text"
-                android:fontFamily="@font/clicker_script"
+                android:fontFamily="serif-monospace"
                 android:layout_below="@+id/post_my_pic"/>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -93,7 +92,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_centerVertical="true"
-                app:srcCompat="@drawable/heartoutline" />
+                android:layout_marginRight="5dp"
+                android:paddingRight="5dp"
+                app:srcCompat="@drawable/littleheart" />
 
             <ImageView
                 android:id="@+id/comment_icon"

@@ -18,13 +18,13 @@
             android:id="@+id/chat_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="hello"
             android:paddingLeft="25dp"
             android:paddingTop="10dp"
             android:textSize="16dp"
             android:maxWidth="300dp"
             android:autoLink="all"
             android:clickable="true"
+            android:minWidth="120dp"
             android:background="@drawable/bg_receiver"
             android:layout_toRightOf="@+id/chat_pic"
             android:textColor="#FFFFFF"
@@ -63,7 +63,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="2dp"
         android:text="Seen"
-
+        android:visibility="gone"
         />
 
 

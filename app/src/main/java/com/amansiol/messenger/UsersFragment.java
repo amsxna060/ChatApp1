@@ -2,6 +2,8 @@ package com.amansiol.messenger;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -57,6 +59,8 @@ public class UsersFragment extends Fragment {
     Allusers_Adapter allusers_adapter;
     List<Allusers_models> Userlist;
 
+    private int sound3StreamId;
+
     public UsersFragment() {
         // Required empty public constructor
     }
@@ -70,7 +74,8 @@ public class UsersFragment extends Fragment {
         post_recycler=v.findViewById(R.id.images_recycler);
         StaggeredGridLayoutManager staggeredGridLayoutManager=new StaggeredGridLayoutManager(2,LinearLayoutManager.VERTICAL);
 //        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
-        staggeredGridLayoutManager.setReverseLayout(true);
+//        staggeredGridLayoutManager.setReverseLayout(true);
+
         post_recycler.setLayoutManager(staggeredGridLayoutManager);
         post_recycler.setHasFixedSize(true);
         mfirebasedatabase=FirebaseDatabase.getInstance();
@@ -181,6 +186,7 @@ public class UsersFragment extends Fragment {
         checkUserLoginState();
         super.onResume();
     }
+
 
 
     @Override

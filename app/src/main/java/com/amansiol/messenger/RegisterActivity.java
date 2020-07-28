@@ -41,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setStatusBarColor(Color.parseColor("#ffffff"));
+        getWindow().setStatusBarColor(Color.parseColor("#7f000000"));
         setContentView(R.layout.activity_register);
         //init views
         Login=findViewById(R.id.register_text);
@@ -52,12 +52,12 @@ public class RegisterActivity extends AppCompatActivity {
         progressBar=findViewById(R.id.progress_bar_reg);
         mAuth = FirebaseAuth.getInstance();
 
-        Login.setText(Html.fromHtml(getColoredSpanned(new_here,"#4E4E4E")+getColoredSpanned(rgstr,"#D93A6E")));
+        Login.setText(Html.fromHtml(getColoredSpanned(new_here,"#4E4E4E")+getColoredSpanned(rgstr,"#FF1744")));
         backbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
-                Animatoo.animateWindmill(RegisterActivity.this);
+                Animatoo.animateShrink(RegisterActivity.this);
             }
         });
         Login.setOnClickListener(new View.OnClickListener() {
@@ -157,8 +157,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Animatoo.animateShrink(RegisterActivity.this);
         finish();
-        Animatoo.animateWindmill(RegisterActivity.this);
+
     }
 
 }

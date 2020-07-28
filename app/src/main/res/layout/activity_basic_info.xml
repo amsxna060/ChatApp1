@@ -113,7 +113,7 @@
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:padding="5dp"
-        android:backgroundTint="#D93A6E"
+        android:backgroundTint="@color/colorThemeAccentpink"
         android:layout_below="@id/TIL_contact"
         android:layout_marginTop="16dp"
         android:text="NEXT"

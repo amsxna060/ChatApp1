@@ -4,15 +4,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat;
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Animatable2;
+import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,9 +31,14 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,8 +102,13 @@ public class ChatActivity extends AppCompatActivity {
   List<ChatModel> chatList;
   ChatAdapter chatAdapter;
   RecyclerView chatrecycler;
+  RelativeLayout hiswholetypinganimationlayout;
+  ImageView hisimagetypinganimation;
+  ImageView hisheartbeattypingani;
+  ImageView chatActmenu;
 //  ImageButton sendimagemsgbtn;
-
+    private SoundPool soundPool;
+    private int sound1, sound2, sound3;
 
   private  RequestQueue  requestQueue;
   private boolean notify=false;
@@ -109,7 +128,22 @@ public class ChatActivity extends AppCompatActivity {
         fab_send=findViewById(R.id.send_btn_msg);
         edit_msg_txt=findViewById(R.id.edit_txt_box);
         chatrecycler=findViewById(R.id.chatsmessagesscreen);
+        hisimagetypinganimation=findViewById(R.id.histypinganichat_pic);
+        hisheartbeattypingani=findViewById(R.id.histypinganim);
+        hiswholetypinganimationlayout=findViewById(R.id.hiswholetypinganilayout);
+//        chatActmenu=findViewById(R.id.chatActmenu);
 //        sendimagemsgbtn=findViewById(R.id.send_pic_msg);
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(3)
+                .setAudioAttributes(audioAttributes)
+                .build();
+        sound1 = soundPool.load(ChatActivity.this, R.raw.got_it_done, 1);
+        sound2 = soundPool.load(ChatActivity.this, R.raw.swiftly, 1);
+        sound3 = soundPool.load(ChatActivity.this, R.raw.filling_your_inbox, 1);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
         chatrecycler.setHasFixedSize(true);
@@ -137,10 +171,52 @@ public class ChatActivity extends AppCompatActivity {
 
                     if(typingstatus.equals(myUid)){
                         chat_status.setText("typing....");
+                        hiswholetypinganimationlayout.setVisibility(View.VISIBLE);
+                        try {
+                            Picasso.get().load(hisImage).into(hisimagetypinganimation);
+                        }catch (Exception e)
+                        {
+                            Picasso.get().load(R.drawable.profilepic).into(hisimagetypinganimation);
+                        }
+                        Drawable d=hisheartbeattypingani.getDrawable();
+                        if(d instanceof AnimatedVectorDrawableCompat){
+                            final AnimatedVectorDrawableCompat drawableCompat=(AnimatedVectorDrawableCompat)d;
+                            drawableCompat.registerAnimationCallback(new Animatable2Compat.AnimationCallback() {
+                                @Override
+                                public void onAnimationEnd(Drawable drawable) {
+                                    super.onAnimationEnd(drawable);
+                                    drawableCompat.start();
+                                }
+                            });
+                            drawableCompat.start();
+                        }else if(d instanceof AnimatedVectorDrawable){
+                            final AnimatedVectorDrawable drawable=(AnimatedVectorDrawable)d;
+                            drawable.registerAnimationCallback(new Animatable2.AnimationCallback() {
+                                @Override
+                                public void onAnimationEnd(Drawable drawable2) {
+                                    super.onAnimationEnd(drawable2);
+                                    drawable.start();
+                                }
+
+                            });
+                            drawable.start();
+                        }
+
+
+
+//                        d.registerAnimationCallback(new Animatable2.AnimationCallback() {
+//                            @Override
+//                            public void onAnimationEnd(Drawable drawable) {
+//                                avd.start();
+//                            }
+//                        });
+//
+//                        drawable.start();
                     }else {
                         String onlinestatus=""+ds.child("onlineStatus").getValue();
                             if(onlinestatus.equals("online")){
                             chat_status.setText(onlinestatus);
+                            hiswholetypinganimationlayout.setVisibility(View.GONE);
                         } else {
                             Calendar cal= Calendar.getInstance(Locale.ENGLISH);
                             cal.setTimeInMillis(Long.parseLong(onlinestatus));
@@ -192,6 +268,7 @@ public class ChatActivity extends AppCompatActivity {
                         checkTypingStatus("noOne");
                     }else {
                         checkTypingStatus(hisUid);
+
                     }
             }
 
@@ -210,6 +287,7 @@ public class ChatActivity extends AppCompatActivity {
               }else {
                   SendMessage(my_msg);
                   edit_msg_txt.setText("");
+                  soundPool.play(sound3, 1, 1, 0, 0, 1);
 
               }
 
@@ -276,6 +354,80 @@ public class ChatActivity extends AppCompatActivity {
 //                        }).check();
 //            }
 //        });
+
+//        PopupMenu popupMenuchat=new PopupMenu(ChatActivity.this,chatActmenu, Gravity.END);
+//        popupMenuchat.getMenu().add(Menu.NONE,0,0,"Clear Chat");
+//        popupMenuchat.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                if(item.getItemId()==0){
+//                    ClearChat();
+//                }
+//                return false;
+//            }
+//        });
+//        popupMenuchat.show();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.chatactmenu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId()==R.id.clearchat){
+            AlertDialog.Builder alert=new AlertDialog.Builder(this);
+            alert.setTitle("Clear");
+            alert.setCancelable(true);
+            alert.setMessage("Are you Sure to Clear all Chat for Both?");
+            alert.setPositiveButton("Clear", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    ClearChat();
+                }
+            });
+            alert.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                 dialog.dismiss();
+                }
+            });
+            alert.create().show();
+
+            return true;
+        }
+        return false;
+    }
+
+    private void ClearChat() {
+        final ProgressDialog pd=new ProgressDialog(ChatActivity.this);
+        pd.setMessage("Deleting...");
+        pd.show();
+        DatabaseReference chatdbref=FirebaseDatabase.getInstance().getReference("Chats");
+        chatdbref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds:snapshot.getChildren()){
+
+                    ChatModel chat=ds.getValue(ChatModel.class);
+                    if(chat.getReceiver().equals(myUid)&&chat.getSender().equals(hisUid) ||
+                            chat.getReceiver().equals(hisUid)&&chat.getSender().equals(myUid)){
+                        ds.getRef().removeValue();
+                    }
+
+
+                }
+                pd.dismiss();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 
@@ -376,7 +528,7 @@ public class ChatActivity extends AppCompatActivity {
                                 new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                Toast.makeText(ChatActivity.this,"send",Toast.LENGTH_LONG).show();
+
 
                             }
                         }, new Response.ErrorListener() {
@@ -457,6 +609,15 @@ public class ChatActivity extends AppCompatActivity {
         readMessages();
         seenMessages();
         super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+            soundPool.release();
+            soundPool=null;
+        }
     }
 
     @Override

@@ -432,9 +432,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.child(posttime).hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                 {
-                    holder.love_icon.setImageResource(R.drawable.heart);
+                    holder.love_icon.setImageResource(R.drawable.filllittleheart);
+                    Drawable d=holder.love_icon.getDrawable();
+                    if(d instanceof AnimatedVectorDrawableCompat){
+                        AnimatedVectorDrawableCompat drawableCompat=(AnimatedVectorDrawableCompat)d;
+                        drawableCompat.start();
+                    }else if(d instanceof AnimatedVectorDrawable){
+                        AnimatedVectorDrawable drawable=(AnimatedVectorDrawable)d;
+                        drawable.start();
+                    }
                 }else{
-                    holder.love_icon.setImageResource(R.drawable.heartoutline);
+                    holder.love_icon.setImageResource(R.drawable.littleheart);
+                    Drawable d=holder.love_icon.getDrawable();
+                    if(d instanceof AnimatedVectorDrawableCompat){
+                        AnimatedVectorDrawableCompat drawableCompat=(AnimatedVectorDrawableCompat)d;
+                        drawableCompat.start();
+                    }else if(d instanceof AnimatedVectorDrawable){
+                        AnimatedVectorDrawable drawable=(AnimatedVectorDrawable)d;
+                        drawable.start();
+                    }
 
                 }
             }

@@ -8,6 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -89,6 +92,8 @@ public class HomeFragment extends Fragment {
     PostAdapter postAdapter;
     String timestamp;
     ProgressBar postprogress;
+    private SoundPool soundPool;
+    private int sound1, sound2, sound3;
     public HomeFragment() { }
 
 
@@ -97,7 +102,17 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View post= inflater.inflate(R.layout.fragment_home, container, false);
-
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(3)
+                .setAudioAttributes(audioAttributes)
+                .build();
+        sound1 = soundPool.load(getActivity(), R.raw.got_it_done, 1);
+        sound2 = soundPool.load(getActivity(), R.raw.swiftly, 1);
+        sound3 = soundPool.load(getActivity(), R.raw.filling_your_inbox, 1);
         postrecycler=post.findViewById(R.id.post_recyler);
         post_my_pic=post.findViewById(R.id.post_my_pic);
         load_post=post.findViewById(R.id.upload_post);
@@ -211,7 +226,7 @@ public class HomeFragment extends Fragment {
                                            public void onSuccess(Void aVoid) {
 //                                               pd.dismiss();
                                                postprogress.setVisibility(View.GONE);
-                                               Toast.makeText(getActivity(), "Post Uploaded..." , Toast.LENGTH_LONG).show();
+                                               soundPool.play(sound1, 1, 1, 0, 0, 1);
                                                write_thought.setText("");
                                                postUri=null;
                                                if(postUri==null){
@@ -270,7 +285,7 @@ public class HomeFragment extends Fragment {
                        public void onSuccess(Void aVoid) {
 //                           pd.dismiss();
                            postprogress.setVisibility(View.GONE);
-                           Toast.makeText(getActivity(), "Post Uploaded..." , Toast.LENGTH_LONG).show();
+                           soundPool.play(sound1, 1, 1, 0, 0, 1);
                            write_thought.setText("");
                            postUri=null;
                            if(postUri==null){
@@ -321,7 +336,7 @@ public class HomeFragment extends Fragment {
                                            public void onSuccess(Void aVoid) {
 //                                               pd.dismiss();
                                                postprogress.setVisibility(View.GONE);
-                                               Toast.makeText(getActivity(), "Post Uploaded..." , Toast.LENGTH_LONG).show();
+                                               soundPool.play(sound1, 1, 1, 0, 0, 1);
                                                write_thought.setText("");
                                                postUri=null;
                                                if(postUri==null){
@@ -408,7 +423,15 @@ public class HomeFragment extends Fragment {
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 4);
         startActivityForResult(intent, REQUEST_IMAGE);
     }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+            soundPool.release();
+            soundPool=null;
+        }
 
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -418,7 +441,7 @@ public class HomeFragment extends Fragment {
                 try {
                     // You can update this bitmap to your server
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), postUri);
-
+                    Bitmap resized = Bitmap.createScaledBitmap(bitmap,(int)(bitmap.getWidth()*0.6), (int)(bitmap.getHeight()*0.6), true);
                     // loading profile image from local cache
                     Picasso.get().load(postUri).into(show_posted_pic);
 
@@ -600,4 +623,22 @@ public class HomeFragment extends Fragment {
         }
         return false;
     }
+//    public Bitmap resizeBitmap(String photoPath, int targetW, int targetH) {
+//        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+//        bmOptions.inJustDecodeBounds = true;
+//        BitmapFactory.decodeFile(photoPath, bmOptions);
+//        int photoW = bmOptions.outWidth;
+//        int photoH = bmOptions.outHeight;
+//
+//        int scaleFactor = 1;
+//        if ((targetW > 0) || (targetH > 0)) {
+//            scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+//        }
+//
+//        bmOptions.inJustDecodeBounds = false;
+//        bmOptions.inSampleSize = scaleFactor;
+//        bmOptions.inPurgeable = true; //Deprecated API 21
+//
+//        return BitmapFactory.decodeFile(photoPath, bmOptions);
+//    }
 }

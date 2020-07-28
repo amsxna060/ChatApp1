@@ -19,12 +19,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
-            android:textColor="#FFFFFF"
+            android:textColor="#000000"
             android:textSize="18dp"
             android:text="message"
             android:maxWidth="300dp"
             android:clickable="true"
             android:autoLink="all"
+            android:minWidth="150dp"
             android:layout_toLeftOf="@+id/chat_pic"
             android:background="@drawable/bg_sender"
             android:paddingRight="25dp"
@@ -50,15 +51,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/chat_msg"
         android:visibility="gone"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="50dp"
+        android:layout_alignEnd="@+id/chat_msg"
         />
     <TextView
         android:id="@+id/seenlistener"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/chat_msg"
-        android:layout_alignParentEnd="true"
+        android:layout_alignStart="@+id/chat_msg"
+        android:visibility="gone"
+        android:fontFamily="monospace"
         />
 
 

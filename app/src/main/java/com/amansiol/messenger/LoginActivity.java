@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setStatusBarColor(Color.parseColor("#ffffff"));
+        getWindow().setStatusBarColor(Color.parseColor("#7f000000"));
         setContentView(R.layout.activity_login);
         //init
         Register=findViewById(R.id.register_btn);
@@ -51,12 +51,12 @@ public class LoginActivity extends AppCompatActivity {
         progressBar=findViewById(R.id.progress_bar_lgn);
         forget_pass=findViewById(R.id.forget_text);
         mAuth=FirebaseAuth.getInstance();
-        Register.setText(Html.fromHtml(getColoredSpanned(new_here,"#4E4E4E")+getColoredSpanned(rgstr,"#D93A6E")));
+        Register.setText(Html.fromHtml(getColoredSpanned(new_here,"#4E4E4E")+getColoredSpanned(rgstr,"#FF1744")));
         backbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
-                Animatoo.animateWindmill(LoginActivity.this);
+                Animatoo.animateShrink(LoginActivity.this);
             }
         });
         Register.setOnClickListener(new View.OnClickListener() {
@@ -166,7 +166,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        Animatoo.animateWindmill(LoginActivity.this);
+        Animatoo.animateShrink(LoginActivity.this);
         finish();
     }
 }

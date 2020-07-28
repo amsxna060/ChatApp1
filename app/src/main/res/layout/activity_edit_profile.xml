@@ -75,7 +75,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     app:siBorderType="stroke"
-                    app:siBorderColor="@color/colorThemeAccentpink"
+                    app:siBorderColor="@color/colorAccent"
                     app:siBorderWidth="3dp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="80dp"

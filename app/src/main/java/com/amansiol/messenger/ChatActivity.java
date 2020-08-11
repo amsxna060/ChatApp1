@@ -4,16 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -30,18 +27,16 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amansiol.messenger.database.UserMsgDb;
 import com.amansiol.messenger.models.Allusers_models;
 import com.amansiol.messenger.models.ChatModel;
 import com.amansiol.messenger.notification.Data;
@@ -54,6 +49,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.siyamed.shapeimageview.CircularImageView;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -61,8 +57,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -95,10 +98,11 @@ public class ChatActivity extends AppCompatActivity {
   String hisImage;
   String myimage;
   FirebaseAuth mAuth;
-  DatabaseReference mref;
-  FirebaseDatabase mdatabase;
-  ValueEventListener SeenListener;
-  DatabaseReference DbRefForSeen;
+//  DatabaseReference mref;
+//  FirebaseDatabase mdatabase;
+//  ValueEventListener SeenListener;
+//  DatabaseReference DbRefForSeen;
+    FirebaseFirestore Chatdb;
   List<ChatModel> chatList;
   ChatAdapter chatAdapter;
   RecyclerView chatrecycler;
@@ -106,12 +110,15 @@ public class ChatActivity extends AppCompatActivity {
   ImageView hisimagetypinganimation;
   ImageView hisheartbeattypingani;
   ImageView chatActmenu;
+  String timestamp;
+  final UserMsgDb msg_database=new UserMsgDb(ChatActivity.this);
 //  ImageButton sendimagemsgbtn;
     private SoundPool soundPool;
     private int sound1, sound2, sound3;
 
-  private  RequestQueue  requestQueue;
-  private boolean notify=false;
+    private  RequestQueue  requestQueue;
+    private boolean notify=false;
+    private EventListener DbRefForSeen;
 
 
     @Override
@@ -156,104 +163,83 @@ public class ChatActivity extends AppCompatActivity {
         mAuth=FirebaseAuth.getInstance();
         FirebaseUser user=mAuth.getCurrentUser();
         myUid=user.getUid();
-        mdatabase=FirebaseDatabase.getInstance();
-        mref=mdatabase.getReference("Users");
-        Query query=mref.orderByChild("UID").equalTo(hisUid);
-        query.addValueEventListener(new ValueEventListener() {
+        Chatdb=FirebaseFirestore.getInstance();
+       com.google.firebase.firestore.Query query=Chatdb.collection("Users").whereEqualTo("UID",user.getUid());
+       query.addSnapshotListener(this,new EventListener<QuerySnapshot>() {
+           @Override
+           public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+               if(error!=null){
+                   Toast.makeText(ChatActivity.this,""+error.getMessage(),Toast.LENGTH_LONG).show();
+                   return;
+               }
+              for(QueryDocumentSnapshot ds:value){
+                  String name=""+ds.get("name");
+                  hisImage=""+ds.get("image");
+                  String typingstatus=""+ds.get("typing");
+                  if(typingstatus.equals(myUid)){
+                      chat_status.setText("typing....");
+                      hiswholetypinganimationlayout.setVisibility(View.VISIBLE);
+                      try {
+                          Picasso.get().load(hisImage).into(hisimagetypinganimation);
+                      }catch (Exception e)
+                      {
+                          Picasso.get().load(R.drawable.profilepic).into(hisimagetypinganimation);
+                      }
+                      Drawable d=hisheartbeattypingani.getDrawable();
+                      if(d instanceof AnimatedVectorDrawableCompat){
+                          final AnimatedVectorDrawableCompat drawableCompat=(AnimatedVectorDrawableCompat)d;
+                          drawableCompat.registerAnimationCallback(new Animatable2Compat.AnimationCallback() {
+                              @Override
+                              public void onAnimationEnd(Drawable drawable) {
+                                  super.onAnimationEnd(drawable);
+                                  drawableCompat.start();
+                              }
+                          });
+                          drawableCompat.start();
+                      }else if(d instanceof AnimatedVectorDrawable){
+                          final AnimatedVectorDrawable drawable=(AnimatedVectorDrawable)d;
+                          drawable.registerAnimationCallback(new Animatable2.AnimationCallback() {
+                              @Override
+                              public void onAnimationEnd(Drawable drawable2) {
+                                  super.onAnimationEnd(drawable2);
+                                  drawable.start();
+                              }
+
+                          });
+                          drawable.start();
+                      }
+
+
+                  }else {
+                      String onlinestatus=""+ds.get("onlineStatus");
+                      if(onlinestatus.equals("online")){
+                          chat_status.setText(onlinestatus);
+                          hiswholetypinganimationlayout.setVisibility(View.GONE);
+                      } else {
+                          Calendar cal= Calendar.getInstance(Locale.ENGLISH);
+                          cal.setTimeInMillis(Long.parseLong(onlinestatus));
+                          String date= DateFormat.format("hh:mm aa",cal).toString();
+                          chat_status.setText("Last Seen at : "+date);
+                      }
+                  }
+                  chat_name.setText(name);
+                  try {
+                      Picasso.get().load(hisImage).into(chat_pic);
+                  }catch (Exception e)
+                  {
+                      Picasso.get().load(R.drawable.profilepic).into(chat_pic);
+                  }
+              }
+
+           }
+       });
+        com.google.firebase.firestore.Query query1img=Chatdb.collection("Users").whereEqualTo("UID",user.getUid());
+        query1img.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds:snapshot.getChildren())
-                {
-                    String name=""+ds.child("name").getValue();
-                    hisImage=""+ds.child("image").getValue();
-
-                    String typingstatus=""+ds.child("typing").getValue();
-
-                    if(typingstatus.equals(myUid)){
-                        chat_status.setText("typing....");
-                        hiswholetypinganimationlayout.setVisibility(View.VISIBLE);
-                        try {
-                            Picasso.get().load(hisImage).into(hisimagetypinganimation);
-                        }catch (Exception e)
-                        {
-                            Picasso.get().load(R.drawable.profilepic).into(hisimagetypinganimation);
-                        }
-                        Drawable d=hisheartbeattypingani.getDrawable();
-                        if(d instanceof AnimatedVectorDrawableCompat){
-                            final AnimatedVectorDrawableCompat drawableCompat=(AnimatedVectorDrawableCompat)d;
-                            drawableCompat.registerAnimationCallback(new Animatable2Compat.AnimationCallback() {
-                                @Override
-                                public void onAnimationEnd(Drawable drawable) {
-                                    super.onAnimationEnd(drawable);
-                                    drawableCompat.start();
-                                }
-                            });
-                            drawableCompat.start();
-                        }else if(d instanceof AnimatedVectorDrawable){
-                            final AnimatedVectorDrawable drawable=(AnimatedVectorDrawable)d;
-                            drawable.registerAnimationCallback(new Animatable2.AnimationCallback() {
-                                @Override
-                                public void onAnimationEnd(Drawable drawable2) {
-                                    super.onAnimationEnd(drawable2);
-                                    drawable.start();
-                                }
-
-                            });
-                            drawable.start();
-                        }
-
-
-
-//                        d.registerAnimationCallback(new Animatable2.AnimationCallback() {
-//                            @Override
-//                            public void onAnimationEnd(Drawable drawable) {
-//                                avd.start();
-//                            }
-//                        });
-//
-//                        drawable.start();
-                    }else {
-                        String onlinestatus=""+ds.child("onlineStatus").getValue();
-                            if(onlinestatus.equals("online")){
-                            chat_status.setText(onlinestatus);
-                            hiswholetypinganimationlayout.setVisibility(View.GONE);
-                        } else {
-                            Calendar cal= Calendar.getInstance(Locale.ENGLISH);
-                            cal.setTimeInMillis(Long.parseLong(onlinestatus));
-                            String date= DateFormat.format("hh:mm aa",cal).toString();
-                            chat_status.setText("Last Seen at : "+date);
-                        }
-                    }
-                    chat_name.setText(name);
-                    try {
-                        Picasso.get().load(hisImage).into(chat_pic);
-                    }catch (Exception e)
-                    {
-                        Picasso.get().load(R.drawable.profilepic).into(chat_pic);
-                    }
-
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot ds:queryDocumentSnapshots){
+                    myimage=""+ds.get("image");
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        query=mref.orderByChild("UID").equalTo(user.getUid());
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                for(DataSnapshot ds:snapshot.getChildren())
-                {
-                    myimage=""+ds.child("image").getValue();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
         edit_msg_txt.addTextChangedListener(new TextWatcher() {
@@ -277,7 +263,8 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
-      fab_send.setOnClickListener(new View.OnClickListener() {
+
+        fab_send.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
               notify=true;
@@ -403,66 +390,36 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void ClearChat() {
-        final ProgressDialog pd=new ProgressDialog(ChatActivity.this);
-        pd.setMessage("Deleting...");
-        pd.show();
-        DatabaseReference chatdbref=FirebaseDatabase.getInstance().getReference("Chats");
-        chatdbref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds:snapshot.getChildren()){
 
-                    ChatModel chat=ds.getValue(ChatModel.class);
-                    if(chat.getReceiver().equals(myUid)&&chat.getSender().equals(hisUid) ||
-                            chat.getReceiver().equals(hisUid)&&chat.getSender().equals(myUid)){
-                        ds.getRef().removeValue();
+    }
+
+    private void seenMessages() {
+//       DbRefForSeen=FirebaseDatabase.getInstance().getReference("Chats");
+        Chatdb.collection("Chats").addSnapshotListener(this ,new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                for (QueryDocumentSnapshot ds:value){
+                    ChatModel chat=ds.toObject(ChatModel.class);
+                    if(chat.getReceiver().equals(myUid)&&chat.getSender().equals(hisUid)){
+                        HashMap<String,Object> seenupdate=new HashMap<>();
+                        seenupdate.put("isseen",true);
+                        msg_database.UpdateisSeen(timestamp,true);
+                        ds.getReference().update(seenupdate);
                     }
-
-
                 }
-                pd.dismiss();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
 
     }
 
-    private void seenMessages() {
-       DbRefForSeen=FirebaseDatabase.getInstance().getReference("Chats");
-       SeenListener=DbRefForSeen.addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(@NonNull DataSnapshot snapshot) {
-               for(DataSnapshot ds:snapshot.getChildren()){
-                   ChatModel chat=ds.getValue(ChatModel.class);
-                   if(chat.getReceiver().equals(myUid)&&chat.getSender().equals(hisUid)){
-                       HashMap<String,Object> seenupdate=new HashMap<>();
-                       seenupdate.put("isseen",true);
-                       ds.getRef().updateChildren(seenupdate);
-                   }
-               }
-           }
-
-           @Override
-           public void onCancelled(@NonNull DatabaseError error) {
-
-           }
-       });
-    }
-
     private void readMessages() {
         chatList=new ArrayList<>();
-        DatabaseReference chatdbref=FirebaseDatabase.getInstance().getReference("Chats");
-        chatdbref.addValueEventListener(new ValueEventListener() {
+        Chatdb.collection("Chats").addSnapshotListener(this, new EventListener<QuerySnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 chatList.clear();
-                for(DataSnapshot ds:snapshot.getChildren()){
-
-                    ChatModel chat=ds.getValue(ChatModel.class);
+                for(QueryDocumentSnapshot ds:value){
+                    ChatModel chat=ds.toObject(ChatModel.class);
                     if(chat.getReceiver().equals(myUid)&&chat.getSender().equals(hisUid) ||
                             chat.getReceiver().equals(hisUid)&&chat.getSender().equals(myUid)){
                         chatList.add(chat);
@@ -470,50 +427,59 @@ public class ChatActivity extends AppCompatActivity {
                     chatAdapter=new ChatAdapter(ChatActivity.this,chatList,hisImage,myimage);
                     chatAdapter.notifyDataSetChanged();
                     chatrecycler.setAdapter(chatAdapter);
-
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
 
+//        chatList.clear();
+//        Cursor cursor=msg_database.getAllMsg();
+//        while(cursor.moveToNext()){
+//
+//            ChatModel chatModel=new ChatModel();
+//            chatModel.setTimestamp(cursor.getString(0));
+//            chatModel.setSender(cursor.getString(1));
+//            chatModel.setReceiver(cursor.getString(2));
+//            chatModel.setMessage(cursor.getString(3));
+//            chatModel.setIsseen(Boolean.parseBoolean(cursor.getString(4)));
+//                    if(chatModel.getReceiver().equals(myUid)&&chatModel.getSender().equals(hisUid) ||
+//                            chatModel.getReceiver().equals(hisUid)&&chatModel.getSender().equals(myUid)){
+//                        chatList.add(chatModel);
+//                    }
+//        }
+//        chatAdapter=new ChatAdapter(ChatActivity.this,chatList,hisImage,myimage);
+//        chatAdapter.notifyDataSetChanged();
+//        chatrecycler.setAdapter(chatAdapter);
     }
     private void SendMessage(final String my_msg) {
-        String timestamp=String.valueOf(System.currentTimeMillis());
-    DatabaseReference msgref=FirebaseDatabase.getInstance().getReference();
+       timestamp=String.valueOf(System.currentTimeMillis());
+//    DatabaseReference msgref=FirebaseDatabase.getInstance().getReference();
         HashMap<String,Object> chatsmsg=new HashMap<>();
         chatsmsg.put("sender",myUid);
         chatsmsg.put("receiver",hisUid);
         chatsmsg.put("message",my_msg);
         chatsmsg.put("timestamp",timestamp);
         chatsmsg.put("isseen",false);
-        msgref.child("Chats").push().setValue(chatsmsg);
-
-        final DatabaseReference database=FirebaseDatabase.getInstance().getReference("Users").child(myUid);
-        database.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Allusers_models user=snapshot.getValue(Allusers_models.class);
-                if(notify){
-                   sendNotification(hisUid,user.getName(),my_msg);
-                }
-                notify=false;
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        Chatdb.collection("Chats").document(timestamp).set(chatsmsg);
+        ChatModel tempObj=new ChatModel(my_msg,hisUid,myUid,timestamp,false);
+        long id=msg_database.Insert_Msg(tempObj);
+//      final DatabaseReference database=FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        Chatdb.collection("Users").document(myUid)
+                .addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        Allusers_models user=value.toObject(Allusers_models.class);
+                        if(notify){
+                            sendNotification(hisUid,user.getName(),my_msg);
+                        }
+                        notify=false;
+                    }
+                });
 
     }
 
     private void sendNotification(final String hisUid, final String name, final String my_msg) {
-        DatabaseReference allTokens=FirebaseDatabase.getInstance().getReference("Tokens");
-        Query query=allTokens.orderByKey().equalTo(hisUid);
+        DatabaseReference allTokens= FirebaseDatabase.getInstance().getReference("Tokens");
+        com.google.firebase.database.Query query=allTokens.orderByKey().equalTo(hisUid);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -526,12 +492,12 @@ public class ChatActivity extends AppCompatActivity {
                         JSONObject senderJsonObj=new JSONObject(new Gson().toJson(sender));
                         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", senderJsonObj,
                                 new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
 
 
-                            }
-                        }, new Response.ErrorListener() {
+                                    }
+                                }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 Toast.makeText(ChatActivity.this,""+error.getMessage(),Toast.LENGTH_LONG).show();
@@ -545,7 +511,7 @@ public class ChatActivity extends AppCompatActivity {
                                 return headers;
                             }
                         };
-                       requestQueue.add(jsonObjectRequest);
+                        requestQueue.add(jsonObjectRequest);
                     } catch (JSONException e) {
                         Toast.makeText(ChatActivity.this,""+e.getMessage(),Toast.LENGTH_LONG).show();
                     }
@@ -559,6 +525,7 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
 
@@ -574,16 +541,14 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void checkOnlineStatus(String online){
-        DatabaseReference onlineref=FirebaseDatabase.getInstance().getReference("Users");
         HashMap<String,Object> result=new HashMap<>();
         result.put("onlineStatus",online);
-        onlineref.child(myUid).updateChildren(result);
+        Chatdb.collection("Users").document(myUid).update(result);
     }
     private void checkTypingStatus(String typing){
-        DatabaseReference onlineref=FirebaseDatabase.getInstance().getReference("Users");
         HashMap<String,Object> result=new HashMap<>();
         result.put("typing",typing);
-        onlineref.child(myUid).updateChildren(result);
+        Chatdb.collection("Users").document(myUid).update(result);
     }
 
     @Override
@@ -591,7 +556,6 @@ public class ChatActivity extends AppCompatActivity {
         super.onPause();
         checkTypingStatus("noOne");
         checkOnlineStatus(String.valueOf(System.currentTimeMillis()));
-        DbRefForSeen.removeEventListener(SeenListener);
     }
 
 
@@ -599,6 +563,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         seenMessages();
+        readMessages();
         checkOnlineStatus("online");
     }
 

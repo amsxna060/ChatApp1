@@ -38,6 +38,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -64,8 +67,7 @@ public class EditProfileActivity extends AppCompatActivity {
     public static final int REQUEST_IMAGE = 100;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
+    FirebaseFirestore db;
     ImageView ecover_pic;
     EditText euser_name;
     EditText euser_status;
@@ -124,63 +126,59 @@ public class EditProfileActivity extends AppCompatActivity {
         //init firebase essentials
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
-        firebaseDatabase=FirebaseDatabase.getInstance();
-        databaseReference=firebaseDatabase.getReference("Users");
+        db=FirebaseFirestore.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         //query by Uid
-        Query query=databaseReference.orderByChild("UID").equalTo(firebaseUser.getUid());
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds :snapshot.getChildren())
-                {
-                    String scover_pic=""+ds.child("coverimage").getValue();
-                    String suser_email=""+ds.child("email").getValue();
-                    String suser_Uid=""+ds.child("UID").getValue();
-                    String suser_name=""+ds.child("name").getValue();
-                    String suser_dob=""+ds.child("dob").getValue();
-                    String suser_number=""+ds.child("number").getValue();
-                    suser_number=suser_number.substring(4);
-                    String suser_profile_pic=""+ds.child("image").getValue();
-                    String suser_status=""+ds.child("status").getValue();
-                    String suser_isverified=""+ds.child("isverified").getValue();
-                    String suser_address=""+ds.child("address").getValue();
-                    String suser_hobby1=""+ds.child("hobby1").getValue();
-                    String suser_hobby2=""+ds.child("hobby2").getValue();
-                    String suser_hobby3=""+ds.child("hobby3").getValue();
-                    String suser_gender=""+ds.child("gender").getValue();
-                   euser_name.setText(suser_name);
-                   euser_email.setText(suser_email);
-                   euser_status.setText(suser_status);
-                   euser_number.setText(suser_number);
-                   euser_verified.setText(suser_isverified);
-                   euser_add.setText(suser_address);
-                   euser_dob.setText(suser_dob);
-                   euser_hobby1.setText(suser_hobby1);
-                   euser_hobby2.setText(suser_hobby2);
-                   euser_hobby3.setText(suser_hobby3);
-                   euser_gender.setText(suser_gender);
-                    try {
-                        Picasso.get().load(suser_profile_pic).into(euser_profile_pic);
-                    }catch (Exception e)
-                    {
-                        Picasso.get().load(R.drawable.profilepic).into(euser_profile_pic);
+        db.collection("Users").whereEqualTo("UID",firebaseUser.getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(QueryDocumentSnapshot ds : queryDocumentSnapshots)
+                        {
+
+                            String scover_pic=""+ds.get("coverimage");
+                            String suser_email=""+ds.get("email");
+                            String suser_Uid=""+ds.get("UID");
+                            String suser_name=""+ds.get("name");
+                            String suser_dob=""+ds.get("dob");
+                            String suser_number=""+ds.get("number");
+                            suser_number=suser_number.substring(4);
+                            String suser_profile_pic=""+ds.get("image");
+                            String suser_status=""+ds.get("status");
+                            String suser_isverified=""+ds.get("isverified");
+                            String suser_address=""+ds.get("address");
+                            String suser_hobby1=""+ds.get("hobby1");
+                            String suser_hobby2=""+ds.get("hobby2");
+                            String suser_hobby3=""+ds.get("hobby3");
+                            String suser_gender=""+ds.get("gender");
+                            euser_name.setText(suser_name);
+                            euser_email.setText(suser_email);
+                            euser_status.setText(suser_status);
+                            euser_number.setText(suser_number);
+                            euser_verified.setText(suser_isverified);
+                            euser_add.setText(suser_address);
+                            euser_dob.setText(suser_dob);
+                            euser_hobby1.setText(suser_hobby1);
+                            euser_hobby2.setText(suser_hobby2);
+                            euser_hobby3.setText(suser_hobby3);
+                            euser_gender.setText(suser_gender);
+                            try {
+                                Picasso.get().load(suser_profile_pic).into(euser_profile_pic);
+                            }catch (Exception e)
+                            {
+                                Picasso.get().load(R.drawable.profilepic).into(euser_profile_pic);
+                            }
+                            try {
+                                Picasso.get().load(scover_pic).into(ecover_pic);
+                            }catch (Exception e)
+                            {
+                                Picasso.get().load(R.drawable.cover).into(ecover_pic);
+                            }
+
+                        }
                     }
-                    try {
-                        Picasso.get().load(scover_pic).into(ecover_pic);
-                    }catch (Exception e)
-                    {
-                        Picasso.get().load(R.drawable.cover).into(ecover_pic);
-                    }
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+                });
         euser_dob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -219,7 +217,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent,"Choose Picture"),COVER_PIC_CODE);
-
             }
         });
         add_image_pic.setOnClickListener(new View.OnClickListener() {
@@ -304,7 +301,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     results.put("hobby2", suser_hobby2);
                     results.put("hobby3", suser_hobby3);
 
-                    databaseReference.child(firebaseUser.getUid()).updateChildren(results)
+                    db.collection("Users").document(firebaseUser.getUid()).update(results)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
@@ -331,7 +328,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void updateNameToPost(final String suser_name) {
         DatabaseReference updateref=FirebaseDatabase.getInstance().getReference("Posts");
-        Query query=updateref.orderByChild("puid").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        Query query=updateref.orderByChild("puid").equalTo(firebaseUser.getUid());
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -369,7 +366,7 @@ public class EditProfileActivity extends AppCompatActivity {
         intent.putExtra(ImagePickerActivity.INTENT_IMAGE_PICKER_OPTION, ImagePickerActivity.REQUEST_IMAGE_CAPTURE);
 
         // setting aspect ratio
-        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, true);
+        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, false);
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_X, 1); // 16x9, 1x1, 3:4, 3:2
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1);
 
@@ -386,7 +383,7 @@ public class EditProfileActivity extends AppCompatActivity {
         intent.putExtra(ImagePickerActivity.INTENT_IMAGE_PICKER_OPTION, ImagePickerActivity.REQUEST_GALLERY_IMAGE);
 
         // setting aspect ratio
-        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, true);
+        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, false);
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_X, 1); // 16x9, 1x1, 3:4, 3:2
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1);
         startActivityForResult(intent, REQUEST_IMAGE);
@@ -410,7 +407,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         }else if(requestCode == COVER_PIC_CODE){
             if (resultCode == Activity.RESULT_OK) {
-                 cover_pic_uri= data.getData();
+                 cover_pic_uri=  data.getData();
                 try {
                     // You can update this bitmap to your server
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), cover_pic_uri);
@@ -491,7 +488,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             //image uploaded...
                             HashMap<String,Object> cover=new HashMap<>();
                             cover.put("coverimage",cover_pic_uri_path.toString());
-                            databaseReference.child(firebaseUser.getUid()).updateChildren(cover).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            db.collection("Users").document(firebaseUser.getUid()).update(cover).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                 pd.dismiss();
@@ -541,7 +538,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                         //image uploaded...
                                         HashMap<String,Object> profile=new HashMap<>();
                                         profile.put("image",profile_pic_uri_path.toString());
-                                        databaseReference.child(firebaseUser.getUid()).updateChildren(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        db.collection("Users").document(firebaseUser.getUid()).update(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                               updatePicToPost(profile_pic_uri_path.toString());

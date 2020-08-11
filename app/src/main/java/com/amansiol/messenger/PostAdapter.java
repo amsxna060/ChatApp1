@@ -286,7 +286,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         }
 
 
-         final String posttime=postModels.get(i).getPtimestamp();
+        final String posttime=postModels.get(i).getPtimestamp();
         Calendar cal= Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(Long.parseLong(posttime));
         final String date= DateFormat.format("hh:mm aa",cal).toString();
@@ -303,8 +303,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot ds:snapshot.getChildren()){
-                     cmtusername=""+ds.child("name").getValue();
-                   cmtuserpic =""+ds.child("image").getValue();
+                    cmtusername=""+ds.child("name").getValue();
+                    cmtuserpic =""+ds.child("image").getValue();
                     holder.editTextcmt.setHint("Comment as "+cmtusername+"...");
                     try {
                         Picasso.get().load(cmtuserpic).into(holder.mypiccomment);
@@ -345,13 +345,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                     cmtref.child(cmttimestamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                        holder.editTextcmt.setText("");
-                        updateCommentCount(posttime);
+                            holder.editTextcmt.setText("");
+                            updateCommentCount(posttime);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ctx,""+e.getMessage(),Toast.LENGTH_LONG).show();
+                            Toast.makeText(ctx,""+e.getMessage(),Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -466,96 +466,96 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
     private void deletePost(final String ptimestamp, final String pimage, String desc, final int position) {
         final ProgressDialog pd=new ProgressDialog(ctx);
 
-         if(pimage.equals("noImage")){
-             pd.setMessage("Deleting....");
-             pd.show();
-             Query query=FirebaseDatabase.getInstance().getReference("Posts").orderByChild("ptimestamp").equalTo(ptimestamp);
-             query.addListenerForSingleValueEvent(new ValueEventListener() {
-                 @Override
-                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                     for(DataSnapshot ds:snapshot.getChildren()){
-                         ds.getRef().removeValue();
+        if(pimage.equals("noImage")){
+            pd.setMessage("Deleting....");
+            pd.show();
+            Query query=FirebaseDatabase.getInstance().getReference("Posts").orderByChild("ptimestamp").equalTo(ptimestamp);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot ds:snapshot.getChildren()){
+                        ds.getRef().removeValue();
 
-                     }
-                     pd.dismiss();
-                 }
+                    }
+                    pd.dismiss();
+                }
 
-                 @Override
-                 public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-                 }
-             });
-         }else
-             if(!pimage.equals("noImage")&&desc.equals("noDescription")){
-                 pd.setMessage("Deleting....");
-                 pd.show();
-                 StorageReference storageReference= FirebaseStorage.getInstance().getReferenceFromUrl(pimage);
-                 storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                     @Override
-                     public void onSuccess(Void aVoid) {
-                         //image deleted
-                         Query query=FirebaseDatabase.getInstance().getReference("Posts").orderByChild("ptimestamp").equalTo(ptimestamp);
-                         query.addListenerForSingleValueEvent(new ValueEventListener() {
-                             @Override
-                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                 for(DataSnapshot ds:snapshot.getChildren()){
-                                     ds.getRef().removeValue();
+                }
+            });
+        }else
+        if(!pimage.equals("noImage")&&desc.equals("noDescription")){
+            pd.setMessage("Deleting....");
+            pd.show();
+            StorageReference storageReference= FirebaseStorage.getInstance().getReferenceFromUrl(pimage);
+            storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    //image deleted
+                    Query query=FirebaseDatabase.getInstance().getReference("Posts").orderByChild("ptimestamp").equalTo(ptimestamp);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for(DataSnapshot ds:snapshot.getChildren()){
+                                ds.getRef().removeValue();
 
-                                 }
-                                 pd.dismiss();
-                             }
+                            }
+                            pd.dismiss();
+                        }
 
-                             @Override
-                             public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                             }
-                         });
-                     }
-                 }).addOnFailureListener(new OnFailureListener() {
-                     @Override
-                     public void onFailure(@NonNull Exception e) {
-                         pd.dismiss();
-                         Toast.makeText(ctx,e.getMessage(),Toast.LENGTH_LONG).show();
-                     }
-                 });
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    pd.dismiss();
+                    Toast.makeText(ctx,e.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
 
-         }else
-             if(!pimage.equals("noImage")&&!desc.equals("noDescription")){
+        }else
+        if(!pimage.equals("noImage")&&!desc.equals("noDescription")){
 
-                 pd.setMessage("Deleting....");
-                 pd.show();
-                 StorageReference storageReference= FirebaseStorage.getInstance().getReferenceFromUrl(pimage);
-                 storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                     @Override
-                     public void onSuccess(Void aVoid) {
-                         //image deleted
-                         Query query=FirebaseDatabase.getInstance().getReference("Posts").orderByChild("ptimestamp").equalTo(ptimestamp);
-                         query.addListenerForSingleValueEvent(new ValueEventListener() {
-                             @Override
-                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for(DataSnapshot ds:snapshot.getChildren()){
-                                    ds.getRef().removeValue();
+            pd.setMessage("Deleting....");
+            pd.show();
+            StorageReference storageReference= FirebaseStorage.getInstance().getReferenceFromUrl(pimage);
+            storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    //image deleted
+                    Query query=FirebaseDatabase.getInstance().getReference("Posts").orderByChild("ptimestamp").equalTo(ptimestamp);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for(DataSnapshot ds:snapshot.getChildren()){
+                                ds.getRef().removeValue();
 
-                                }
-                                pd.dismiss();
-                             }
+                            }
+                            pd.dismiss();
+                        }
 
-                             @Override
-                             public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                             }
-                         });
-                     }
-                 }).addOnFailureListener(new OnFailureListener() {
-                     @Override
-                     public void onFailure(@NonNull Exception e) {
-                       pd.dismiss();
-                       Toast.makeText(ctx,e.getMessage(),Toast.LENGTH_LONG).show();
-                     }
-                 });
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    pd.dismiss();
+                    Toast.makeText(ctx,e.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
 
 
-             }
+        }
     }
 
     @Override

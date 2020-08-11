@@ -28,6 +28,7 @@ import com.github.siyamed.shapeimageview.CircularImageView;
 import com.github.siyamed.shapeimageview.HeartImageView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,8 +37,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -52,8 +61,8 @@ import java.util.Objects;
 public class ProfileFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
+    FirebaseFirestore firebaseDatabase;
+    CollectionReference databaseReference;
     ImageView cover_pic;
     TextView user_name;
     TextView user_status;
@@ -105,8 +114,8 @@ public class ProfileFragment extends Fragment {
        //init firebase essentials
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
-        firebaseDatabase=FirebaseDatabase.getInstance();
-        databaseReference=firebaseDatabase.getReference("Users");
+        firebaseDatabase=FirebaseFirestore.getInstance();
+        databaseReference=firebaseDatabase.collection("Users");
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getActivity());
         linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setReverseLayout(true);
@@ -118,59 +127,115 @@ public class ProfileFragment extends Fragment {
         }
 
         //query by Uid
-        Query query=databaseReference.orderByChild("UID").equalTo(myUid);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds :snapshot.getChildren())
-                {
-                   String scover_pic=""+ds.child("coverimage").getValue();
-                   String suser_email=""+ds.child("email").getValue();
-                   String suser_Uid=""+ds.child("UID").getValue();
-                   String suser_name=""+ds.child("name").getValue();
-                   String suser_dob=""+ds.child("dob").getValue();
-                   String suser_number=""+ds.child("number").getValue();
-                   String suser_profile_pic=""+ds.child("image").getValue();
-                   String suser_status=""+ds.child("status").getValue();
-                  suser_isverified=""+ds.child("isverified").getValue();
-                   String suser_address=""+ds.child("address").getValue();
-                   String suser_hobby1=""+ds.child("hobby1").getValue();
-                   String suser_hobby2=""+ds.child("hobby2").getValue();
-                   String suser_hobby3=""+ds.child("hobby3").getValue();
-                   String suser_gender=""+ds.child("gender").getValue();
-                   dialog_image_url=suser_profile_pic;
-                  user_name.setText(suser_name);
-                  user_email.setText(suser_email);
-                  user_status.setText(suser_status);
-                  user_number.setText(suser_number);
-                  user_verified.setText(suser_isverified);
-                  user_add.setText(suser_address);
-                  user_dob.setText(suser_dob);
-                  user_hobby1.setText(suser_hobby1);
-                  user_hobby2.setText(suser_hobby2);
-                  user_hobby3.setText(suser_hobby3);
-                  user_gender.setText(suser_gender);
-                    try {
-                        Picasso.get().load(suser_profile_pic).into(user_profile_pic);
-                    }catch (Exception e)
-                    {
-                        Picasso.get().load(R.drawable.profilepic).into(user_profile_pic);
+//        Query query=databaseReference.orderByChild("UID").equalTo(myUid);
+        databaseReference.
+                whereEqualTo("UID",firebaseUser.getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(QueryDocumentSnapshot ds : queryDocumentSnapshots)
+                        {
+
+                            String scover_pic=""+ds.get("coverimage");
+                            String suser_email=""+ds.get("email");
+                            String suser_Uid=""+ds.get("UID");
+                            String suser_name=""+ds.get("name");
+                            String suser_dob=""+ds.get("dob");
+                            String suser_number=""+ds.get("number");
+                            String suser_profile_pic=""+ds.get("image");
+                            String suser_status=""+ds.get("status");
+                            suser_isverified=""+ds.get("isverified");
+                            String suser_address=""+ds.get("address");
+                            String suser_hobby1=""+ds.get("hobby1");
+                            String suser_hobby2=""+ds.get("hobby2");
+                            String suser_hobby3=""+ds.get("hobby3");
+                            String suser_gender=""+ds.get("gender");
+                            dialog_image_url=suser_profile_pic;
+                            user_name.setText(suser_name);
+                            user_email.setText(suser_email);
+                            user_status.setText(suser_status);
+                            user_number.setText(suser_number);
+                            user_verified.setText(suser_isverified);
+                            user_add.setText(suser_address);
+                            user_dob.setText(suser_dob);
+                            user_hobby1.setText(suser_hobby1);
+                            user_hobby2.setText(suser_hobby2);
+                            user_hobby3.setText(suser_hobby3);
+                            user_gender.setText(suser_gender);
+                            try {
+                                Picasso.get().load(suser_profile_pic).into(user_profile_pic);
+                            }catch (Exception e)
+                            {
+                                Picasso.get().load(R.drawable.profilepic).into(user_profile_pic);
+                            }
+                            try {
+                                Picasso.get().load(scover_pic).into(cover_pic);
+                            }catch (Exception e)
+                            {
+                                Picasso.get().load(R.drawable.cover).into(cover_pic);
+                            }
+
+                        }
                     }
-                    try {
-                        Picasso.get().load(scover_pic).into(cover_pic);
-                    }catch (Exception e)
-                    {
-                        Picasso.get().load(R.drawable.cover).into(cover_pic);
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
                     }
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+                });
+//        query.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                for(DataSnapshot ds :snapshot.getChildren())
+//                {
+//                   String scover_pic=""+ds.child("coverimage").getValue();
+//                   String suser_email=""+ds.child("email").getValue();
+//                   String suser_Uid=""+ds.child("UID").getValue();
+//                   String suser_name=""+ds.child("name").getValue();
+//                   String suser_dob=""+ds.child("dob").getValue();
+//                   String suser_number=""+ds.child("number").getValue();
+//                   String suser_profile_pic=""+ds.child("image").getValue();
+//                   String suser_status=""+ds.child("status").getValue();
+//                  suser_isverified=""+ds.child("isverified").getValue();
+//                   String suser_address=""+ds.child("address").getValue();
+//                   String suser_hobby1=""+ds.child("hobby1").getValue();
+//                   String suser_hobby2=""+ds.child("hobby2").getValue();
+//                   String suser_hobby3=""+ds.child("hobby3").getValue();
+//                   String suser_gender=""+ds.child("gender").getValue();
+//                   dialog_image_url=suser_profile_pic;
+//                  user_name.setText(suser_name);
+//                  user_email.setText(suser_email);
+//                  user_status.setText(suser_status);
+//                  user_number.setText(suser_number);
+//                  user_verified.setText(suser_isverified);
+//                  user_add.setText(suser_address);
+//                  user_dob.setText(suser_dob);
+//                  user_hobby1.setText(suser_hobby1);
+//                  user_hobby2.setText(suser_hobby2);
+//                  user_hobby3.setText(suser_hobby3);
+//                  user_gender.setText(suser_gender);
+//                    try {
+//                        Picasso.get().load(suser_profile_pic).into(user_profile_pic);
+//                    }catch (Exception e)
+//                    {
+//                        Picasso.get().load(R.drawable.profilepic).into(user_profile_pic);
+//                    }
+//                    try {
+//                        Picasso.get().load(scover_pic).into(cover_pic);
+//                    }catch (Exception e)
+//                    {
+//                        Picasso.get().load(R.drawable.cover).into(cover_pic);
+//                    }
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
         user_profile_pic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -198,9 +263,10 @@ public class ProfileFragment extends Fragment {
         loadPost();
         return view;
     }
-
+// we have to edit this
     private void loadPost() {
         DatabaseReference chatdbref=FirebaseDatabase.getInstance().getReference("Posts");
+//        DocumentReference chatdbref=FirebaseFirestore.getInstance().document("Posts");
         chatdbref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -225,6 +291,18 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+//        chatdbref.addSnapshotListener(Objects.requireNonNull(getActivity()), new EventListener<DocumentSnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+//                    if(error!=null){
+//                        Toast.makeText(getActivity(), ""+ error.getMessage(), Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
+//                    if(value.exists()){
+//
+//                    }
+//            }
+//        });
     }
 
     @Override
@@ -236,7 +314,7 @@ public class ProfileFragment extends Fragment {
            if(muser.isEmailVerified()){
                HashMap<String, Object> results = new HashMap<>();
                results.put("isverified","Verified");
-               databaseReference.child(firebaseUser.getUid()).updateChildren(results);
+               firebaseDatabase.collection("Users").document(muser.getUid()).update(results);
            }else
            {
                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

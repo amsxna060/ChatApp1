@@ -135,8 +135,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot ds:snapshot.getChildren()){
-                   spost_my_name =""+ds.child("name").getValue();
-                   spost_profile_pic =""+ds.child("image").getValue();
+                    spost_my_name =""+ds.child("name").getValue();
+                    spost_profile_pic =""+ds.child("image").getValue();
                     postMy_name.setText(spost_my_name);
                     try {
                         Picasso.get().load(spost_profile_pic).into(post_my_pic);
@@ -177,210 +177,210 @@ public class HomeFragment extends Fragment {
                         }).check();
             }
         });
-       load_post.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               if(write_thought.getText().toString().isEmpty()&&postUri==null){
-                   Toast.makeText(getActivity(),"Please Make Sure you are going to Post Something...",Toast.LENGTH_LONG).show();
-                   return;
-               }
-               timestamp=String.valueOf(System.currentTimeMillis());
-               InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-               //Find the currently focused view, so we can grab the correct window token from it.
-               View view = getActivity().getCurrentFocus();
-               //If no view currently has focus, create a new one, just so we can grab a window token from it
-               if (view == null) {
-                   view = new View(getActivity());
-               }
-               imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-               if(postUri!=null && write_thought.getText().toString().isEmpty()){
+        load_post.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(write_thought.getText().toString().isEmpty()&&postUri==null){
+                    Toast.makeText(getActivity(),"Please Make Sure you are going to Post Something...",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                timestamp=String.valueOf(System.currentTimeMillis());
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                //Find the currently focused view, so we can grab the correct window token from it.
+                View view = getActivity().getCurrentFocus();
+                //If no view currently has focus, create a new one, just so we can grab a window token from it
+                if (view == null) {
+                    view = new View(getActivity());
+                }
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                if(postUri!=null && write_thought.getText().toString().isEmpty()){
 
-                   postprogress.setVisibility(View.VISIBLE);
+                    postprogress.setVisibility(View.VISIBLE);
 
-                   String FilePathNamecover=StoragePath+""+"postedpic"+"_"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"_"+timestamp;
-                   StorageReference storageref2cover = mStorageRef.child(FilePathNamecover);
+                    String FilePathNamecover=StoragePath+""+"postedpic"+"_"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"_"+timestamp;
+                    StorageReference storageref2cover = mStorageRef.child(FilePathNamecover);
 
-                   storageref2cover.putFile(postUri)
-                           .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                               @Override
-                               public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                   // Get a URL to the uploaded content
-                                   Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                                   while (!uriTask.isSuccessful());
-                                   Uri cover_pic_uri_path=uriTask.getResult();
-                                   if(uriTask.isSuccessful()){
-                                       //image uploaded...
-                                       final DatabaseReference addpostref=FirebaseDatabase.getInstance().getReference("Posts");
+                    storageref2cover.putFile(postUri)
+                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    // Get a URL to the uploaded content
+                                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                                    while (!uriTask.isSuccessful());
+                                    Uri cover_pic_uri_path=uriTask.getResult();
+                                    if(uriTask.isSuccessful()){
+                                        //image uploaded...
+                                        final DatabaseReference addpostref=FirebaseDatabase.getInstance().getReference("Posts");
 
-                                       HashMap<String,Object> postdetails=new HashMap<>();
-                                       postdetails.put("pname",spost_my_name);
-                                       postdetails.put("puid",FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                       postdetails.put("pimage",cover_pic_uri_path.toString());
-                                       postdetails.put("pdesc","noDescription");
-                                       postdetails.put("ptimestamp", timestamp);
-                                       postdetails.put("puserimage",spost_profile_pic);
-                                       postdetails.put("likes","0");
-                                       postdetails.put("comments","0");
-                                       addpostref.child(timestamp).setValue(postdetails).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                           @Override
-                                           public void onSuccess(Void aVoid) {
+                                        HashMap<String,Object> postdetails=new HashMap<>();
+                                        postdetails.put("pname",spost_my_name);
+                                        postdetails.put("puid",FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        postdetails.put("pimage",cover_pic_uri_path.toString());
+                                        postdetails.put("pdesc","noDescription");
+                                        postdetails.put("ptimestamp", timestamp);
+                                        postdetails.put("puserimage",spost_profile_pic);
+                                        postdetails.put("likes","0");
+                                        postdetails.put("comments","0");
+                                        addpostref.child(timestamp).setValue(postdetails).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
 //                                               pd.dismiss();
-                                               postprogress.setVisibility(View.GONE);
-                                               soundPool.play(sound1, 1, 1, 0, 0, 1);
-                                               write_thought.setText("");
-                                               postUri=null;
-                                               if(postUri==null){
-                                                   show_posted_pic.setVisibility(View.GONE);
-                                               }else {
-                                                   show_posted_pic.setVisibility(View.VISIBLE);
-                                               }
+                                                postprogress.setVisibility(View.GONE);
+                                                soundPool.play(sound1, 1, 1, 0, 0, 1);
+                                                write_thought.setText("");
+                                                postUri=null;
+                                                if(postUri==null){
+                                                    show_posted_pic.setVisibility(View.GONE);
+                                                }else {
+                                                    show_posted_pic.setVisibility(View.VISIBLE);
+                                                }
 
-                                           }
-                                       }).addOnFailureListener(new OnFailureListener() {
-                                           @Override
-                                           public void onFailure(@NonNull Exception e) {
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
 //                                               pd.dismiss();
-                                               postprogress.setVisibility(View.GONE);
-                                               Toast.makeText(getActivity(), ""+e.getMessage() , Toast.LENGTH_LONG).show();
-                                           }
-                                       });
+                                                postprogress.setVisibility(View.GONE);
+                                                Toast.makeText(getActivity(), ""+e.getMessage() , Toast.LENGTH_LONG).show();
+                                            }
+                                        });
 
 
-                                   }else {
+                                    }else {
 //                                       pd.dismiss();
-                                       postprogress.setVisibility(View.GONE);
-                                       Toast.makeText(getActivity(), "Error while uploading image" , Toast.LENGTH_LONG).show();
+                                        postprogress.setVisibility(View.GONE);
+                                        Toast.makeText(getActivity(), "Error while uploading image" , Toast.LENGTH_LONG).show();
 
-                                   }
-                               }
-                           })
-                           .addOnFailureListener(new OnFailureListener() {
-                               @Override
-                               public void onFailure(@NonNull Exception exception) {
-                                   // Handle unsuccessful uploads
+                                    }
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle unsuccessful uploads
 //                                   pd.dismiss();
-                                   postprogress.setVisibility(View.GONE);
-                                   Toast.makeText(getActivity(), ""+exception.getMessage() , Toast.LENGTH_LONG).show();
-                                   // ...
-                               }
-                           });
-               }else if(postUri==null && !write_thought.getText().toString().isEmpty()){
+                                    postprogress.setVisibility(View.GONE);
+                                    Toast.makeText(getActivity(), ""+exception.getMessage() , Toast.LENGTH_LONG).show();
+                                    // ...
+                                }
+                            });
+                }else if(postUri==null && !write_thought.getText().toString().isEmpty()){
 //                   pd.setTitle("Upload");
 //                   pd.setMessage("Post Uploading....");
 //                   pd.show();
-                   postprogress.setVisibility(View.VISIBLE);
-                   final DatabaseReference addpostref=FirebaseDatabase.getInstance().getReference("Posts");
+                    postprogress.setVisibility(View.VISIBLE);
+                    final DatabaseReference addpostref=FirebaseDatabase.getInstance().getReference("Posts");
 
-                   HashMap<String,Object> postdetails=new HashMap<>();
-                   postdetails.put("pname",spost_my_name);
-                   postdetails.put("puid",FirebaseAuth.getInstance().getCurrentUser().getUid());
-                   postdetails.put("pimage","noImage");
-                   postdetails.put("pdesc",write_thought.getText().toString());
-                   postdetails.put("ptimestamp", timestamp);
-                   postdetails.put("puserimage",spost_profile_pic);
-                   postdetails.put("likes","0");
-                   postdetails.put("comments","0");
-                   addpostref.child(timestamp).setValue(postdetails).addOnSuccessListener(new OnSuccessListener<Void>() {
-                       @Override
-                       public void onSuccess(Void aVoid) {
+                    HashMap<String,Object> postdetails=new HashMap<>();
+                    postdetails.put("pname",spost_my_name);
+                    postdetails.put("puid",FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    postdetails.put("pimage","noImage");
+                    postdetails.put("pdesc",write_thought.getText().toString());
+                    postdetails.put("ptimestamp", timestamp);
+                    postdetails.put("puserimage",spost_profile_pic);
+                    postdetails.put("likes","0");
+                    postdetails.put("comments","0");
+                    addpostref.child(timestamp).setValue(postdetails).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
 //                           pd.dismiss();
-                           postprogress.setVisibility(View.GONE);
-                           soundPool.play(sound1, 1, 1, 0, 0, 1);
-                           write_thought.setText("");
-                           postUri=null;
-                           if(postUri==null){
-                               show_posted_pic.setVisibility(View.GONE);
-                           }else {
-                               show_posted_pic.setVisibility(View.VISIBLE);
-                           }
-                       }
-                   }).addOnFailureListener(new OnFailureListener() {
-                       @Override
-                       public void onFailure(@NonNull Exception e) {
+                            postprogress.setVisibility(View.GONE);
+                            soundPool.play(sound1, 1, 1, 0, 0, 1);
+                            write_thought.setText("");
+                            postUri=null;
+                            if(postUri==null){
+                                show_posted_pic.setVisibility(View.GONE);
+                            }else {
+                                show_posted_pic.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
 //                           pd.dismiss();
-                           postprogress.setVisibility(View.GONE);
-                           Toast.makeText(getActivity(), ""+e.getMessage() , Toast.LENGTH_LONG).show();
-                       }
-                   });
-               }else if(postUri!=null && !write_thought.getText().toString().isEmpty()) {
+                            postprogress.setVisibility(View.GONE);
+                            Toast.makeText(getActivity(), ""+e.getMessage() , Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }else if(postUri!=null && !write_thought.getText().toString().isEmpty()) {
 //                   pd.setTitle("Upload");
 //                   pd.setMessage("Post Uploading....");
 //                   pd.show();
-                   postprogress.setVisibility(View.VISIBLE);
-                   String FilePathNamecover=StoragePath+""+"postedpic"+"_"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"_"+timestamp;
-                   StorageReference storageref2cover = mStorageRef.child(FilePathNamecover);
+                    postprogress.setVisibility(View.VISIBLE);
+                    String FilePathNamecover=StoragePath+""+"postedpic"+"_"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"_"+timestamp;
+                    StorageReference storageref2cover = mStorageRef.child(FilePathNamecover);
 
-                   storageref2cover.putFile(postUri)
-                           .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                               @Override
-                               public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                   // Get a URL to the uploaded content
-                                   Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                                   while (!uriTask.isSuccessful());
-                                   Uri cover_pic_uri_path=uriTask.getResult();
-                                   if(uriTask.isSuccessful()){
-                                       //image uploaded...
-                                       final DatabaseReference addpostref=FirebaseDatabase.getInstance().getReference().child("Posts");
+                    storageref2cover.putFile(postUri)
+                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    // Get a URL to the uploaded content
+                                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                                    while (!uriTask.isSuccessful());
+                                    Uri cover_pic_uri_path=uriTask.getResult();
+                                    if(uriTask.isSuccessful()){
+                                        //image uploaded...
+                                        final DatabaseReference addpostref=FirebaseDatabase.getInstance().getReference().child("Posts");
 
-                                       HashMap<String,Object> postdetails=new HashMap<>();
-                                       postdetails.put("pname",spost_my_name);
-                                       postdetails.put("puid",FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                       postdetails.put("pimage",cover_pic_uri_path.toString());
-                                       postdetails.put("pdesc",write_thought.getText().toString());
-                                       postdetails.put("ptimestamp", timestamp);
-                                       postdetails.put("puserimage",spost_profile_pic);
-                                       postdetails.put("likes","0");
-                                       postdetails.put("comments","0");
-                                       addpostref.child(timestamp).setValue(postdetails).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                           @Override
-                                           public void onSuccess(Void aVoid) {
+                                        HashMap<String,Object> postdetails=new HashMap<>();
+                                        postdetails.put("pname",spost_my_name);
+                                        postdetails.put("puid",FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        postdetails.put("pimage",cover_pic_uri_path.toString());
+                                        postdetails.put("pdesc",write_thought.getText().toString());
+                                        postdetails.put("ptimestamp", timestamp);
+                                        postdetails.put("puserimage",spost_profile_pic);
+                                        postdetails.put("likes","0");
+                                        postdetails.put("comments","0");
+                                        addpostref.child(timestamp).setValue(postdetails).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
 //                                               pd.dismiss();
-                                               postprogress.setVisibility(View.GONE);
-                                               soundPool.play(sound1, 1, 1, 0, 0, 1);
-                                               write_thought.setText("");
-                                               postUri=null;
-                                               if(postUri==null){
-                                                   show_posted_pic.setVisibility(View.GONE);
-                                               }else {
-                                                   show_posted_pic.setVisibility(View.VISIBLE);
-                                               }
-                                           }
-                                       }).addOnFailureListener(new OnFailureListener() {
-                                           @Override
-                                           public void onFailure(@NonNull Exception e) {
+                                                postprogress.setVisibility(View.GONE);
+                                                soundPool.play(sound1, 1, 1, 0, 0, 1);
+                                                write_thought.setText("");
+                                                postUri=null;
+                                                if(postUri==null){
+                                                    show_posted_pic.setVisibility(View.GONE);
+                                                }else {
+                                                    show_posted_pic.setVisibility(View.VISIBLE);
+                                                }
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
 //                                               pd.dismiss();
-                                               postprogress.setVisibility(View.GONE);
-                                               Toast.makeText(getActivity(), ""+e.getMessage() , Toast.LENGTH_LONG).show();
-                                           }
-                                       });
+                                                postprogress.setVisibility(View.GONE);
+                                                Toast.makeText(getActivity(), ""+e.getMessage() , Toast.LENGTH_LONG).show();
+                                            }
+                                        });
 
 
-                                   }else {
+                                    }else {
 //                                       pd.dismiss();
-                                       postprogress.setVisibility(View.GONE);
-                                       Toast.makeText(getActivity(), "Error while uploading image" , Toast.LENGTH_LONG).show();
+                                        postprogress.setVisibility(View.GONE);
+                                        Toast.makeText(getActivity(), "Error while uploading image" , Toast.LENGTH_LONG).show();
 
-                                   }
-                               }
-                           })
-                           .addOnFailureListener(new OnFailureListener() {
-                               @Override
-                               public void onFailure(@NonNull Exception exception) {
-                                   // Handle unsuccessful uploads
+                                    }
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle unsuccessful uploads
 //                                   pd.dismiss();
-                                   postprogress.setVisibility(View.GONE);
-                                   Toast.makeText(getActivity(), ""+exception.getMessage() , Toast.LENGTH_LONG).show();
-                                   // ...
-                               }
-                           });
+                                    postprogress.setVisibility(View.GONE);
+                                    Toast.makeText(getActivity(), ""+exception.getMessage() , Toast.LENGTH_LONG).show();
+                                    // ...
+                                }
+                            });
 
-               }
+                }
 
 
-           }
-       });
-       PostList=new ArrayList<>();
-       return post;
+            }
+        });
+        PostList=new ArrayList<>();
+        return post;
     }
     private void showImagePickerOptions() {
         ImagePickerActivity.showImagePickerOptions(getActivity(), new ImagePickerActivity.PickerOptionListener() {
@@ -517,7 +517,7 @@ public class HomeFragment extends Fragment {
 
                     PostModel post=ds.getValue(PostModel.class);
                     if(post.getPname().toLowerCase().contains(s.toLowerCase())||
-                       post.getPdesc().toLowerCase().contains(s.toLowerCase())){
+                            post.getPdesc().toLowerCase().contains(s.toLowerCase())){
                         PostList.add(post);
                     }
 
@@ -554,7 +554,7 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-   public void onResume() {
+    public void onResume() {
         checkUserLoginState();
         super.onResume();
     }
@@ -584,7 +584,7 @@ public class HomeFragment extends Fragment {
                 if(!TextUtils.isEmpty(newText)){
                     SearchPost(newText);
                 }else {
-                  loadPost();
+                    loadPost();
                 }
                 return false;
             }

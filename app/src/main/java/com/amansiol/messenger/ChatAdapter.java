@@ -3,31 +3,25 @@ package com.amansiol.messenger;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.Animatable;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amansiol.messenger.models.ChatModel;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
@@ -153,24 +147,26 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
                 holder.seenlistener.setVisibility(View.GONE);
             }
         }
+        final String myUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if(chatList.get(position).getSender().equals(myUid)){
+            holder.chat_msg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder=new AlertDialog.Builder(ctx);
+                    builder.setCancelable(true);
+                    String items[]={"Unsend Message"};
 
+                    builder.setItems(items, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            delete(position);
+                        }
+                    });
+                    builder.create().show();
+                }
+            });
+        }
 
-         holder.chat_msg.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 AlertDialog.Builder builder=new AlertDialog.Builder(ctx);
-                 builder.setCancelable(true);
-                 String items[]={"Unsend Message"};
-
-                 builder.setItems(items, new DialogInterface.OnClickListener() {
-                     @Override
-                     public void onClick(DialogInterface dialog, int which) {
-                         delete(position);
-                     }
-                 });
-                 builder.create().show();
-             }
-         });
 
 //        Animation animation= AnimationUtils.loadAnimation(ctx,R.anim.animate_windmill_enter);
 //        holder.itemView.startAnimation(animation);
@@ -179,27 +175,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder> {
     }
 
     private void delete(int i) {
-        final String myUid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         String msgtimestamp=chatList.get(i).getTimestamp();
-        DatabaseReference mydbref= FirebaseDatabase.getInstance().getReference("Chats");
-        Query query=mydbref.orderByChild("timestamp").equalTo(msgtimestamp);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds:snapshot.getChildren()){
-                    if(ds.child("sender").getValue().equals(myUid)){
-                          ds.getRef().removeValue();
-                    }else {
-                        Toast.makeText(ctx,"Unsend Only Your Message",Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        FirebaseFirestore mydbref=FirebaseFirestore.getInstance();
+        final DocumentReference query =mydbref.collection("Chats").document(msgtimestamp);
+        query.delete();
 
     }
 

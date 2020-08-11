@@ -3,19 +3,14 @@ package com.amansiol.messenger;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
@@ -23,8 +18,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -46,8 +41,8 @@ public class BasicInfoActivity extends AppCompatActivity {
    String sbasic_info_cno;
    FirebaseAuth firebaseAuth;
    FirebaseUser user;
-   FirebaseDatabase firebaseDatabase;
-   DatabaseReference databaseReference;
+  FirebaseFirestore firebaseDatabase;
+  DocumentReference databaseReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,8 +57,8 @@ public class BasicInfoActivity extends AppCompatActivity {
         //init firebase essential
         firebaseAuth=FirebaseAuth.getInstance();
         user=firebaseAuth.getCurrentUser();
-        firebaseDatabase=FirebaseDatabase.getInstance();
-        databaseReference=firebaseDatabase.getReference("Users");
+        firebaseDatabase=FirebaseFirestore.getInstance();
+        databaseReference=firebaseDatabase.collection("Users").document(user.getUid());
         basic_info_dob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,7 +117,7 @@ public class BasicInfoActivity extends AppCompatActivity {
                       results.put("number",sbasic_info_cno);
                       results.put("dob",sbasic_info_dob);
                       results.put("gender",sbasic_info_gen);
-                      databaseReference.child(user.getUid()).updateChildren(results)
+                      databaseReference.update(results)
                               .addOnSuccessListener(new OnSuccessListener<Void>() {
                                   @Override
                                   public void onSuccess(Void aVoid) {

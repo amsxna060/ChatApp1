@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
@@ -38,6 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText Register_email;
     ProgressBar progressBar;
     FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,10 +124,10 @@ public class RegisterActivity extends AppCompatActivity {
                             userhashmap.put("hobby2","Add Hobby");
                             userhashmap.put("hobby3","Add Hobby");
 
+                            //firestore
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            db.collection("Users").document(mAuth.getUid()).set(userhashmap);
 
-                            FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
-                            DatabaseReference myref=firebaseDatabase.getReference("Users");
-                            myref.child(userUID).setValue(userhashmap);
                             Intent intent=new Intent(RegisterActivity.this,BasicInfoActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);

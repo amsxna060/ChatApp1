@@ -36,6 +36,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -48,9 +53,6 @@ import java.util.List;
 public class UsersFragment extends Fragment {
 
     RecyclerView post_recycler;
-    FirebaseDatabase mfirebasedatabase;
-    DatabaseReference mref;
-    DatabaseReference umref;
     FirebaseUser muser;
     FirebaseAuth firebaseAuth;
     imagesadapter imagesadapter;
@@ -58,8 +60,6 @@ public class UsersFragment extends Fragment {
     RecyclerView allusers_recycler;
     Allusers_Adapter allusers_adapter;
     List<Allusers_models> Userlist;
-
-    private int sound3StreamId;
 
     public UsersFragment() {
         // Required empty public constructor
@@ -78,39 +78,32 @@ public class UsersFragment extends Fragment {
 
         post_recycler.setLayoutManager(staggeredGridLayoutManager);
         post_recycler.setHasFixedSize(true);
-        mfirebasedatabase=FirebaseDatabase.getInstance();
-        mref=mfirebasedatabase.getReference("Posts");
         firebaseAuth=FirebaseAuth.getInstance();
         muser=firebaseAuth.getCurrentUser();
         imagesList=new ArrayList<>();
         allusers_recycler=v.findViewById(R.id.searchusers);
         allusers_recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         allusers_recycler.setHasFixedSize(true);
-        mfirebasedatabase=FirebaseDatabase.getInstance();
-        umref=mfirebasedatabase.getReference("Users");
         Userlist=new ArrayList<>();
         loadPost();
         return v;
     }
     private void getAllUser() {
-        umref.addValueEventListener(new ValueEventListener() {
+        FirebaseFirestore db=FirebaseFirestore.getInstance();
+        db.collection("Users").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 Userlist.clear();
-                for(DataSnapshot ds:snapshot.getChildren()){
-                    Allusers_models allusers_models=ds.getValue(Allusers_models.class);
+                for(QueryDocumentSnapshot ds:value){
+                    Allusers_models allusers_models=ds.toObject(Allusers_models.class);
                     if(!allusers_models.getUID().equals(muser.getUid())){
+
                         Userlist.add(allusers_models);
                     }
                     allusers_adapter=new Allusers_Adapter(getActivity(),Userlist);
                     AllUserActivity.alluserActivityvar=false;
                     allusers_recycler.setAdapter(allusers_adapter);
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }
@@ -125,7 +118,7 @@ public class UsersFragment extends Fragment {
 
                     Images images=ds.getValue(Images.class);
                     if(!images.getPimage().equals("noImage")){
-                       imagesList.add(images);
+                        imagesList.add(images);
                     }
                     imagesadapter=new imagesadapter(getActivity(),imagesList);
                     imagesadapter.notifyDataSetChanged();
@@ -142,17 +135,18 @@ public class UsersFragment extends Fragment {
 
     }
     private void searchUsers(final String newText) {
-        umref.addValueEventListener(new ValueEventListener() {
+        FirebaseFirestore db=FirebaseFirestore.getInstance();
+        db.collection("Users").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 Userlist.clear();
-                for(DataSnapshot ds:snapshot.getChildren()){
-                    Allusers_models allusers_models=ds.getValue(Allusers_models.class);
+                for(QueryDocumentSnapshot ds:value){
+                    Allusers_models allusers_models=ds.toObject(Allusers_models.class);
                     if(!allusers_models.getUID().equals(muser.getUid())){
-                       if(allusers_models.getName().toLowerCase().contains(newText.toLowerCase())||
-                          allusers_models.getEmail().toLowerCase().contains(newText.toLowerCase())) {
-                           Userlist.add(allusers_models);
-                       }
+                        if(allusers_models.getName().toLowerCase().contains(newText.toLowerCase())||
+                                allusers_models.getEmail().toLowerCase().contains(newText.toLowerCase())) {
+                            Userlist.add(allusers_models);
+                        }
                     }
                     allusers_adapter=new Allusers_Adapter(getActivity(),Userlist);
                     AllUserActivity.alluserActivityvar=false;
@@ -160,15 +154,8 @@ public class UsersFragment extends Fragment {
                     allusers_recycler.setAdapter(allusers_adapter);
                 }
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
         });
-
     }
-
     private void checkUserLoginState() {
         FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
         if(user!=null){
